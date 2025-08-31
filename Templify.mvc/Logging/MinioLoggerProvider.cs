@@ -34,11 +34,11 @@ namespace Templify.mvc.Logging
 
     public class MinioLoggerOptions
     {
-        public string Endpoint { get; set; } = "localhost:9001";
+        public string Endpoint { get; set; } = "192.168.3.12:9000";
         public string AccessKey { get; set; } = "minioadmin";
         public string SecretKey { get; set; } = "minioadmin";
         public string BucketName { get; set; } = "templify-logs";
-        public bool UseSSL { get; set; } = true;
+        public bool UseSSL { get; set; } = false;
     }
 
     public class MinioLogger : ILogger
@@ -100,14 +100,13 @@ namespace Templify.mvc.Logging
                                  // Также загружаем в MinIO для дублирования
                  try
                  {
-                     var bytes = Encoding.UTF8.GetBytes(logLine);
-                     using var stream = new MemoryStream(bytes);
-
+                     // Загружаем в MinIO весь файл лога, а не только последнюю строку
+                     using var fileStream = File.OpenRead(logFilePath);
                      var putObjectArgs = new PutObjectArgs()
                          .WithBucket(_options.BucketName)
                          .WithObject($"logs/{logFileName}")
-                         .WithStreamData(stream)
-                         .WithObjectSize(bytes.Length)
+                         .WithStreamData(fileStream)
+                         .WithObjectSize(fileStream.Length)
                          .WithContentType("text/plain");
 
                      _minioClient.PutObjectAsync(putObjectArgs).Wait();

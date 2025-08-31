@@ -31,11 +31,11 @@ namespace Templify.mvc
             // Добавляем MinIO логгер провайдер
             var minioLoggerOptions = new MinioLoggerOptions
             {
-                Endpoint = "localhost:9001",
+                Endpoint = "192.168.3.12:9000",
                 AccessKey = "minioadmin",
                 SecretKey = "minioadmin",
                 BucketName = "templify-logs",
-                UseSSL = true
+                UseSSL = false
             };
             
             builder.Logging.ClearProviders();

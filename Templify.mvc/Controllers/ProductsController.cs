@@ -32,20 +32,16 @@ namespace Templify.mvc.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index(string? category, string? search)
+        public async Task<IActionResult> Index(string? category, string? search, int page = 1, int pageSize = 12)
         {
             ViewData["ActiveTab"] = "products";
-            
             var searchQuery = new SearchProductsQuery
             {
                 SearchTerm = search,
                 CategoryType = !string.IsNullOrEmpty(category) ? GetCategoryTypeByDisplayName(category) : null
             };
-            
             var allProducts = await _mediator.Send(searchQuery);
             var purchasedProducts = new List<ProductDto>();
-            
-            // Получаем купленные продукты для аутентифицированного пользователя
             if (User.Identity?.IsAuthenticated == true)
             {
                 var identityId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
@@ -55,23 +51,21 @@ namespace Templify.mvc.Controllers
                     if (appUserId.HasValue)
                     {
                         var purchasedProductIds = await _mediator.Send(new Application.Features.ProductPurchases.Queries.GetPurchasedProductIdsQuery { AppUserId = appUserId.Value });
-                        
-                        purchasedProducts = allProducts
-                            .Where(p => purchasedProductIds.Contains(p.Id))
-                            .ToList();
-                        
-                        // Убираем купленные продукты из общего списка
-                        allProducts = allProducts
-                            .Where(p => !purchasedProductIds.Contains(p.Id))
-                            .ToList();
+                        purchasedProducts = allProducts.Where(p => purchasedProductIds.Contains(p.Id)).ToList();
+                        allProducts = allProducts.Where(p => !purchasedProductIds.Contains(p.Id)).ToList();
                     }
                 }
             }
-            
+            // Пагинация
+            var totalProducts = allProducts.Count;
+            var pagedProducts = allProducts.Skip((page - 1) * pageSize).Take(pageSize).ToList();
             var vm = new ProductListViewModel
             {
-                Products = allProducts,
-                PurchasedProducts = purchasedProducts
+                Products = pagedProducts,
+                PurchasedProducts = purchasedProducts,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalProducts = totalProducts
             };
             return View(vm);
         }
@@ -90,18 +84,15 @@ namespace Templify.mvc.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Search(string search, string? category)
+        public async Task<IActionResult> Search(string search, string? category, int page = 1, int pageSize = 12)
         {
             var searchQuery = new SearchProductsQuery
             {
                 SearchTerm = search,
                 CategoryType = !string.IsNullOrEmpty(category) ? GetCategoryTypeByDisplayName(category) : null
             };
-            
             var allProducts = await _mediator.Send(searchQuery);
             var purchasedProducts = new List<ProductDto>();
-            
-            // Получаем купленные продукты для аутентифицированного пользователя
             if (User.Identity?.IsAuthenticated == true)
             {
                 var identityId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
@@ -111,24 +102,23 @@ namespace Templify.mvc.Controllers
                     if (appUserId.HasValue)
                     {
                         var purchasedProductIds = await _mediator.Send(new Application.Features.ProductPurchases.Queries.GetPurchasedProductIdsQuery { AppUserId = appUserId.Value });
-                        
-                        purchasedProducts = allProducts
-                            .Where(p => purchasedProductIds.Contains(p.Id))
-                            .ToList();
-                        
-                        // Убираем купленные продукты из общего списка
-                        allProducts = allProducts
-                            .Where(p => !purchasedProductIds.Contains(p.Id))
-                            .ToList();
+                        purchasedProducts = allProducts.Where(p => purchasedProductIds.Contains(p.Id)).ToList();
+                        allProducts = allProducts.Where(p => !purchasedProductIds.Contains(p.Id)).ToList();
                     }
                 }
             }
-            
-            return PartialView("_ProductListPartial", new ProductListViewModel
+            // Пагинация
+            var totalProducts = allProducts.Count;
+            var pagedProducts = allProducts.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var vm = new ProductListViewModel
             {
-                Products = allProducts,
-                PurchasedProducts = purchasedProducts
-            });
+                Products = pagedProducts,
+                PurchasedProducts = purchasedProducts,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalProducts = totalProducts
+            };
+            return PartialView("_ProductListPartial", vm);
         }
 
         [HttpPost]

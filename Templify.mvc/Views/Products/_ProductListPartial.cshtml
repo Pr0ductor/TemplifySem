@@ -46,6 +46,27 @@
             </a>
         }
     </div>
+    
+    <!-- Пагинация -->
+    @if (Model.TotalPages > 1)
+    {
+        <nav aria-label="Product pagination" class="pagination-nav">
+            <ul class="pagination custom-pagination">
+                <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="#" onclick="goToPage(@(Model.CurrentPage - 1)); return false;">&laquo;</a>
+                </li>
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" href="#" onclick="goToPage(@i); return false;">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link" href="#" onclick="goToPage(@(Model.CurrentPage + 1)); return false;">&raquo;</a>
+                </li>
+            </ul>
+        </nav>
+    }
 }
 
 @if (!Model.Products.Any() && !Model.PurchasedProducts.Any())
@@ -256,6 +277,61 @@
             justify-content: center;
         }
     }
+
+    .custom-pagination {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        margin: 32px 0 0 0;
+        padding: 0;
+        list-style: none;
+    }
+    .custom-pagination .page-item {
+        margin: 0 2px;
+    }
+    .custom-pagination .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        height: 40px;
+        background: #181c1e;
+        color: #fff;
+        border: 2px solid #00ff88;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        text-decoration: none;
+        box-shadow: 0 2px 8px rgba(0,255,136,0.05);
+        cursor: pointer;
+        outline: none;
+    }
+    .custom-pagination .page-link:hover {
+        background: #00ff88;
+        color: #181c1e;
+        border-color: #00ff88;
+    }
+    .custom-pagination .page-item.active .page-link {
+        background: #00ff88;
+        color: #181c1e;
+        border-color: #00ff88;
+        cursor: default;
+        pointer-events: none;
+        box-shadow: 0 4px 16px rgba(0,255,136,0.15);
+    }
+    .custom-pagination .page-item.disabled .page-link {
+        background: #232526;
+        color: #666;
+        border-color: #232526;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+    .custom-pagination .page-link:focus {
+        box-shadow: 0 0 0 2px #00ff88;
+    }
 </style>
 
 <script>
@@ -268,6 +344,39 @@
             const event = new Event('input', { bubbles: true });
             searchInput.dispatchEvent(event);
         }
+    }
+
+    function goToPage(page) {
+        const searchInput = document.getElementById('product-search');
+        const categorySelect = document.getElementById('category-select');
+        const productsList = document.getElementById('products-list');
+        const spinner = document.getElementById('search-spinner');
+        const search = searchInput ? searchInput.value : '';
+        const category = categorySelect ? categorySelect.value : '';
+        const params = new URLSearchParams();
+        if (search) params.append('search', search);
+        if (category) params.append('category', category);
+        params.append('page', page);
+        params.append('pageSize', 12);
+        spinner.style.display = 'inline-block';
+        productsList.classList.add('loading');
+        fetch(`/Products/Search?${params.toString()}`)
+            .then(r => r.text())
+            .then(html => {
+                productsList.innerHTML = html;
+                spinner.style.display = 'none';
+                productsList.classList.remove('loading');
+                // Обновляем query string
+                const url = new URL(window.location);
+                if (search) url.searchParams.set('search', search); else url.searchParams.delete('search');
+                if (category) url.searchParams.set('category', category); else url.searchParams.delete('category');
+                url.searchParams.set('page', page);
+                window.history.replaceState({}, '', url);
+            })
+            .catch(error => {
+                spinner.style.display = 'none';
+                productsList.classList.remove('loading');
+            });
     }
 </script>
 
