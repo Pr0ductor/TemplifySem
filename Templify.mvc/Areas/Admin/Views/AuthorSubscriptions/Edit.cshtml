@@ -1,0 +1,60 @@
+@model Templify.Application.Common.DTOs.AuthorSubscriptionDto
+@{
+    ViewData["Title"] = "Изменить подписку";
+    Layout = "_AdminLayout";
+}
+<div class="edit-subscription-container">
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Изменить подписку</h1>
+        </div>
+        <div class="header-actions">
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Назад к списку
+            </a>
+        </div>
+    </div>
+    <div class="form-container">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="UserId" class="form-label">Пользователь</label>
+                <select asp-for="UserId" class="form-control" required>
+                    <option value="">-- Выберите пользователя --</option>
+                    @if (ViewBag.Users != null)
+                    {
+                        foreach (var user in ViewBag.Users)
+                        {
+                            <option value="@user.Value" selected="@user.Selected">@user.Text</option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AuthorId" class="form-label">Автор</label>
+                <select asp-for="AuthorId" class="form-control" required>
+                    <option value="">-- Выберите автора --</option>
+                    @if (ViewBag.Authors != null)
+                    {
+                        foreach (var author in ViewBag.Authors)
+                        {
+                            <option value="@author.Value" selected="@author.Selected">@author.Text</option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="AuthorId" class="text-danger"></span>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Сохранить
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

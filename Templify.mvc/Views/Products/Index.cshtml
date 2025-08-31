@@ -1,0 +1,270 @@
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@model Templify.mvc.Models.ProductListViewModel
+@{ ViewData["Title"] = @Localizer["Products"]; }
+
+<div class="section-header" style="margin-bottom: 32px;">
+    <h2>@Localizer["BrowseProducts"]</h2>
+</div>
+
+<div class="search-container">
+    <div class="search-bar-wrapper">
+        <span class="search-icon"><i class="ri-search-line"></i></span>
+        <input id="product-search" type="text" placeholder="@Localizer["Searchbyproductname"]" value="@Context.Request.Query["search"]" class="search-bar" />
+        <div class="search-divider"></div>
+        <select id="category-select" class="category-select">
+            <option value="">@Localizer["AllCategories"]</option>
+            <option value="Business">@Localizer["Business"]</option>
+            <option value="3D Web">@Localizer["3DWeb"]</option>
+            <option value="Saas Platforms">@Localizer["SaasPlatforms"]</option>
+            <option value="Agency">@Localizer["Agency"]</option>
+            <option value="Portfolio Design">@Localizer["PortfolioDesign"]</option>
+            <option value="Ecommerce">@Localizer["Ecommerce"]</option>
+            <option value="Education">@Localizer["Education"]</option>
+            <option value="Health">@Localizer["Health"]</option>
+            <option value="Marketing">@Localizer["Marketing"]</option>
+            <option value="Restaurant & Food">@Localizer["RestaurantFood"]</option>
+            <option value="Gaming & Entertainment">@Localizer["GamingEntertainment"]</option>
+            <option value="Real Estate">@Localizer["RealEstate"]</option>
+        </select>
+        <span id="search-spinner" class="search-spinner" style="display:none;"><i class="ri-loader-4-line ri-spin"></i></span>
+        <button id="search-clear" class="search-clear" style="display:none;"><i class="ri-close-line"></i></button>
+    </div>
+</div>
+
+<div id="products-list" class="products-list-animated">
+    @await Html.PartialAsync("_ProductListPartial", Model)
+</div>
+
+<style>
+    .search-container {
+        margin-bottom: 32px;
+        width: 100%;
+        max-width: 800px;
+    }
+    
+    .search-bar-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        background: #232526;
+        border: 2px solid #23272a;
+        border-radius: 16px;
+        padding: 0;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px 0 rgba(0,255,136,0.08);
+    }
+    
+    .search-bar-wrapper:focus-within {
+        border-color: #00ff88;
+        box-shadow: 0 8px 24px 0 rgba(0,255,136,0.15);
+        transform: translateY(-1px);
+    }
+    
+    .search-bar {
+        flex: 1;
+        padding: 16px 20px 16px 50px;
+        border: none;
+        background: transparent;
+        color: #fff;
+        font-size: 1.1rem;
+        outline: none;
+        min-width: 0;
+    }
+    
+    .search-bar::placeholder {
+        color: #666;
+        font-style: italic;
+    }
+    
+    .search-divider {
+        width: 1px;
+        height: 24px;
+        background: #333;
+        margin: 0 8px;
+    }
+    
+    .search-icon {
+        position: absolute;
+        left: 18px;
+        color: #00ff88;
+        font-size: 1.4rem;
+        pointer-events: none;
+    }
+    
+    .search-spinner {
+        position: absolute;
+        right: 18px;
+        color: #00ff88;
+        font-size: 1.4rem;
+        pointer-events: none;
+    }
+    
+    .search-clear {
+        position: absolute;
+        right: 18px;
+        background: none;
+        border: none;
+        color: #666;
+        font-size: 1.3rem;
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+    
+    .search-clear:hover {
+        color: #00ff88;
+        background: rgba(0,255,136,0.1);
+    }
+    
+    .category-select {
+        padding: 16px 20px;
+        border: none;
+        background: transparent;
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+        outline: none;
+        min-width: 160px;
+        border-radius: 0 14px 14px 0;
+        transition: background-color 0.2s ease;
+    }
+    
+    .category-select:hover {
+        background: rgba(255,255,255,0.05);
+    }
+    
+    .category-select:focus {
+        background: rgba(0,255,136,0.1);
+    }
+    
+    .category-select option {
+        background: #232526;
+        color: #fff;
+        padding: 8px;
+    }
+    
+    @@media (max-width: 768px) {
+        .search-bar-wrapper {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .search-bar {
+            padding: 14px 45px 14px 45px;
+            font-size: 1rem;
+        }
+        
+        .search-divider {
+            display: none;
+        }
+        
+        .category-select {
+            border-radius: 0 0 14px 14px;
+            border-top: 1px solid #333;
+            min-width: auto;
+        }
+        
+        .search-icon, .search-spinner, .search-clear {
+            font-size: 1.2rem;
+        }
+    }
+    
+    .products-list-animated {
+        transition: opacity 0.3s ease;
+    }
+    
+    .products-list-animated.loading {
+        opacity: 0.6;
+    }
+</style>
+
+<script>
+    const searchInput = document.getElementById('product-search');
+    const categorySelect = document.getElementById('category-select');
+    const productsList = document.getElementById('products-list');
+    const spinner = document.getElementById('search-spinner');
+    const clearButton = document.getElementById('search-clear');
+    let searchTimeout;
+
+    function updateQueryString(search, category) {
+        const url = new URL(window.location);
+        if (search) url.searchParams.set('search', search);
+        else url.searchParams.delete('search');
+        if (category) url.searchParams.set('category', category);
+        else url.searchParams.delete('category');
+        window.history.replaceState({}, '', url);
+    }
+
+    function performSearch() {
+        const search = searchInput.value;
+        const category = categorySelect.value;
+        
+        spinner.style.display = 'inline-block';
+        clearButton.style.display = 'none';
+        productsList.classList.add('loading');
+        
+        const params = new URLSearchParams();
+        if (search) params.append('search', search);
+        if (category) params.append('category', category);
+        
+        fetch(`/Products/Search?${params.toString()}`)
+            .then(r => r.text())
+            .then(html => {
+                productsList.innerHTML = html;
+                spinner.style.display = 'none';
+                productsList.classList.remove('loading');
+                updateQueryString(search, category);
+                
+                if (search) {
+                    clearButton.style.display = 'inline-block';
+                }
+            })
+            .catch(error => {
+                console.error('Search error:', error);
+                spinner.style.display = 'none';
+                productsList.classList.remove('loading');
+            });
+    }
+
+    searchInput.addEventListener('input', function () {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(performSearch, 300);
+    });
+
+    categorySelect.addEventListener('change', performSearch);
+
+    clearButton.addEventListener('click', function () {
+        searchInput.value = '';
+        clearButton.style.display = 'none';
+        performSearch();
+    });
+
+    // Функция для очистки поиска (используется в no-results)
+    window.clearSearch = function() {
+        searchInput.value = '';
+        categorySelect.value = '';
+        clearButton.style.display = 'none';
+        performSearch();
+    };
+
+    // При загрузке страницы устанавливаем значения из URL
+    document.addEventListener('DOMContentLoaded', function () {
+        const url = new URL(window.location);
+        const search = url.searchParams.get('search');
+        const category = url.searchParams.get('category');
+        
+        if (search) {
+            searchInput.value = search;
+            clearButton.style.display = 'inline-block';
+        }
+        
+        if (category) {
+            categorySelect.value = category;
+        }
+        
+        if (search || category) {
+            performSearch();
+        }
+    });
+</script>

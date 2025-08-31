@@ -1,0 +1,488 @@
+@model List<Templify.Application.Common.DTOs.ProductPurchaseDto>
+@{
+    ViewData["Title"] = "Покупки продуктов";
+    Layout = "_AdminLayout";
+}
+
+<div class="purchases-container">
+    <!-- Заголовок -->
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Покупки продуктов</h1>
+            <p>Управление всеми покупками продуктов на платформе</p>
+        </div>
+        <div class="header-actions">
+            <a asp-action="Create" class="btn btn-primary" style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 6px; text-decoration: none; margin-right: 12px;">
+                <i class="fas fa-plus"></i> Добавить покупку
+            </a>
+            <span class="purchase-count">@Model.Count покупок</span>
+        </div>
+    </div>
+
+    <!-- Поиск -->
+    <div class="search-filters">
+        <div class="search-box">
+            <i class="ri-search-line"></i>
+            <input type="text" id="searchInput" placeholder="Поиск по пользователю, продукту или автору..." value="@ViewBag.SearchTerm">
+        </div>
+        <div class="filters">
+            <button id="clearFilters" class="btn-secondary" style="padding: 8px 16px; font-size: 12px;">
+                <i class="fas fa-times"></i> Сбросить
+            </button>
+        </div>
+    </div>
+
+    <!-- Таблица покупок -->
+    <div class="table-container">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Пользователь</th>
+                    <th>Продукт</th>
+                    <th>Автор</th>
+                    <th>Категория</th>
+                    <th>Цена</th>
+                    <th>Дата покупки</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="9" class="text-center py-4">
+                            <div class="empty-state">
+                                <i class="ri-shopping-cart-line"></i>
+                                <p>Покупки не найдены</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var purchase in Model)
+                    {
+                        <tr>
+                            <td>#@purchase.Id</td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        @if (!string.IsNullOrEmpty(purchase.UserAvatarUrl))
+                                        {
+                                            var userAvatarPath = purchase.UserAvatarUrl.StartsWith("http") 
+                                                ? purchase.UserAvatarUrl 
+                                                : purchase.UserAvatarUrl.Replace("~", "").Replace("~/", "/");
+                                            <img src="@userAvatarPath" alt="User Avatar" class="user-avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        }
+                                        <span class="user-avatar-initial" style="@(string.IsNullOrEmpty(purchase.UserAvatarUrl) ? "" : "display:none;")">
+                                            @(purchase.UserName.Length > 0 ? purchase.UserName[0].ToString().ToUpper() : "U")
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <div class="user-name">@purchase.UserName</div>
+                                        <div class="user-email">@purchase.UserEmail</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="product-info">
+                                    <div class="product-image">
+                                        @if (!string.IsNullOrEmpty(purchase.ProductImageUrl))
+                                        {
+                                            var productImagePath = purchase.ProductImageUrl.StartsWith("http") 
+                                                ? purchase.ProductImageUrl 
+                                                : purchase.ProductImageUrl.Replace("~", "").Replace("~/", "/");
+                                            <img src="@productImagePath" alt="Product Image" class="product-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        }
+                                        <div class="product-img-placeholder" style="@(string.IsNullOrEmpty(purchase.ProductImageUrl) ? "" : "display:none;")">
+                                            <i class="ri-image-line"></i>
+                                        </div>
+                                    </div>
+                                    <div class="product-details">
+                                        <div class="product-name">@purchase.ProductName</div>
+                                        <div class="product-id">ID: @purchase.ProductId</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="author-info">
+                                    <div class="author-avatar">
+                                        @if (!string.IsNullOrEmpty(purchase.AuthorAvatarUrl))
+                                        {
+                                            var authorAvatarPath = purchase.AuthorAvatarUrl.StartsWith("http") 
+                                                ? purchase.AuthorAvatarUrl 
+                                                : purchase.AuthorAvatarUrl.Replace("~", "").Replace("~/", "/");
+                                            <img src="@authorAvatarPath" alt="Author Avatar" class="author-avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        }
+                                        <span class="author-avatar-initial" style="@(string.IsNullOrEmpty(purchase.AuthorAvatarUrl) ? "" : "display:none;")">
+                                            @(purchase.AuthorName.Length > 0 ? purchase.AuthorName[0].ToString().ToUpper() : "A")
+                                        </span>
+                                    </div>
+                                    <div class="author-name">@purchase.AuthorName</div>
+                                </div>
+                            </td>
+                            <td><span class="badge badge-category">@purchase.ProductCategory</span></td>
+                            <td class="price">$@purchase.Price.ToString("F2")</td>
+                            <td>
+                                <div class="date-info">
+                                    <div class="date-main">@purchase.PurchaseDate.ToString("dd.MM.yyyy")</div>
+                                    <div class="date-time">@purchase.PurchaseDate.ToString("HH:mm")</div>
+                                </div>
+                            </td>
+                            <td>
+                                @if (purchase.Status.ToLower() == "completed")
+                                {
+                                    <span class="badge badge-success">
+                                        <i class="ri-check-line"></i>Завершена
+                                    </span>
+                                }
+                                else if (purchase.Status.ToLower() == "pending")
+                                {
+                                    <span class="badge badge-warning">
+                                        <i class="ri-time-line"></i>В ожидании
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-secondary">@purchase.Status</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a asp-action="Edit" asp-route-id="@purchase.Id" class="btn-icon btn-edit" title="Изменить">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@purchase.Id" method="post" style="display:inline" onsubmit="return confirm('Вы уверены, что хотите удалить эту покупку?');">
+                                        <button type="submit" class="btn-icon btn-delete" title="Удалить">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+.purchases-container {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+}
+
+.header-content h1 {
+    margin: 0 0 8px 0;
+    color: #1a1a1a;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.header-content p {
+    margin: 0;
+    color: #666;
+    font-size: 16px;
+}
+
+.purchase-count {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.search-filters {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    min-width: 300px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 16px 12px 48px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #f093fb;
+    box-shadow: 0 0 0 3px rgba(240, 147, 251, 0.1);
+}
+
+.table-container {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.admin-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #1a1a1a;
+    font-size: 14px;
+}
+
+.admin-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.user-info, .author-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar, .author-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 16px;
+    overflow: hidden;
+    position: relative;
+}
+
+.user-avatar-img, .author-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.user-avatar-initial, .author-avatar-initial {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.user-name, .author-name {
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 2px;
+}
+
+.user-email {
+    color: #666;
+    font-size: 12px;
+}
+
+.product-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.product-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-img-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 20px;
+}
+
+.product-details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.product-name {
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 2px;
+}
+
+.product-id {
+    color: #666;
+    font-size: 12px;
+}
+
+.price {
+    font-weight: 700;
+    color: #28a745;
+    font-size: 16px;
+}
+
+.date-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.date-main {
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 2px;
+}
+
+.date-time {
+    color: #666;
+    font-size: 12px;
+}
+
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.badge-category { background: #e3f2fd; color: #1976d2; }
+.badge-success { background: #e8f5e8; color: #388e3c; }
+.badge-warning { background: #fff3e0; color: #f57c00; }
+.badge-secondary { background: #f5f5f5; color: #666; }
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-icon {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    background: #f8f9fa;
+    color: #666;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+    background: #f093fb;
+    color: white;
+}
+
+.btn-edit:hover {
+    background: #28a745;
+    color: white;
+}
+
+.empty-state {
+    text-align: center;
+    color: #666;
+    padding: 40px 20px;
+}
+
+.empty-state i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 16px;
+}
+
+@@media (max-width: 768px) {
+    .purchases-container {
+        padding: 16px;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+    
+    .search-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-box {
+        min-width: auto;
+    }
+    
+    .admin-table {
+        font-size: 12px;
+    }
+    
+    .admin-table th,
+    .admin-table td {
+        padding: 12px 8px;
+    }
+}
+</style>
+
+<script src="~/js/admin-filters.js"></script>

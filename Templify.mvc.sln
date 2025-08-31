@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35222.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Templify.mvc", "Templify.mvc\Templify.mvc.csproj", "{9749EF2B-1C5D-4283-9CB8-241CEDBEFF6B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{166E59E8-BD7B-49AF-B6CB-E34A1B81D55B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{50C29422-F033-4FFD-8795-F78B9D19F624}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{032F080A-2908-404C-9313-01E110E2A9B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Templify.Application", "Templify.Application\Templify.Application.csproj", "{6055D235-2FD7-481C-830B-DEE2612FD132}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Templify.Domain", "Templify.Domain\Templify.Domain.csproj", "{686A3F5F-3E2A-4FF8-9550-76A8FDE5D3E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Templify.Infrastructure", "Templify.Infrastructure\Templify.Infrastructure.csproj", "{128F5F60-1170-40C4-8E6D-F7DB845ED38F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Templify.Persistence", "Templify.Persistence\Templify.Persistence.csproj", "{848E4E01-76FD-4459-B4B7-CB90E2491F29}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9749EF2B-1C5D-4283-9CB8-241CEDBEFF6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9749EF2B-1C5D-4283-9CB8-241CEDBEFF6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9749EF2B-1C5D-4283-9CB8-241CEDBEFF6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9749EF2B-1C5D-4283-9CB8-241CEDBEFF6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6055D235-2FD7-481C-830B-DEE2612FD132}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6055D235-2FD7-481C-830B-DEE2612FD132}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6055D235-2FD7-481C-830B-DEE2612FD132}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6055D235-2FD7-481C-830B-DEE2612FD132}.Release|Any CPU.Build.0 = Release|Any CPU
+		{686A3F5F-3E2A-4FF8-9550-76A8FDE5D3E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{686A3F5F-3E2A-4FF8-9550-76A8FDE5D3E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{686A3F5F-3E2A-4FF8-9550-76A8FDE5D3E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{686A3F5F-3E2A-4FF8-9550-76A8FDE5D3E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{128F5F60-1170-40C4-8E6D-F7DB845ED38F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{128F5F60-1170-40C4-8E6D-F7DB845ED38F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{128F5F60-1170-40C4-8E6D-F7DB845ED38F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{128F5F60-1170-40C4-8E6D-F7DB845ED38F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{848E4E01-76FD-4459-B4B7-CB90E2491F29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{848E4E01-76FD-4459-B4B7-CB90E2491F29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{848E4E01-76FD-4459-B4B7-CB90E2491F29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{848E4E01-76FD-4459-B4B7-CB90E2491F29}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9749EF2B-1C5D-4283-9CB8-241CEDBEFF6B} = {166E59E8-BD7B-49AF-B6CB-E34A1B81D55B}
+		{6055D235-2FD7-481C-830B-DEE2612FD132} = {50C29422-F033-4FFD-8795-F78B9D19F624}
+		{686A3F5F-3E2A-4FF8-9550-76A8FDE5D3E8} = {50C29422-F033-4FFD-8795-F78B9D19F624}
+		{128F5F60-1170-40C4-8E6D-F7DB845ED38F} = {032F080A-2908-404C-9313-01E110E2A9B3}
+		{848E4E01-76FD-4459-B4B7-CB90E2491F29} = {032F080A-2908-404C-9313-01E110E2A9B3}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {797F82D1-C9F0-45F6-9322-8730743FAD42}
+	EndGlobalSection
+EndGlobal

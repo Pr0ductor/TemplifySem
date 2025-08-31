@@ -1,0 +1,211 @@
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{ ViewData["Title"] = @Localizer["Categories"]; }
+<div class="section-header" style="margin-bottom: 32px;">
+          <h2>@Localizer["TopCategories"]</h2>
+        </div>
+        <div class="categories__grid">
+          <div class="category-card" data-category="business">
+            <div class="category-card__icon"><i class="ri-briefcase-4-line"></i></div>
+            <div class="category-card__title">@Localizer["Business"]</div>
+        <div class="category-card__desc">@Localizer["ReadyMadeTemplates"]</div>
+            <div class="category-card__images">
+              <img src="~/src/img/tem4.png" alt="Business 1" />
+              <img src="~/src/img/tem5.png" alt="Business 2" />
+              <img src="~/src/img/tem6.png" alt="Business 3" />
+            </div>
+          </div>
+          <div class="category-card" data-category="threedweb">
+            <div class="category-card__icon"><i class="ri-cpu-line"></i></div>
+            <div class="category-card__title">@Localizer["3DWeb"]</div>
+        <div class="category-card__desc">@Localizer["ReadyMadeTemplates"]</div>
+            <div class="category-card__images">
+              <img src="~/src/img/tem1.png" alt="3D Web 1" />
+              <img src="~/src/img/tem2.png" alt="3D Web 2" />
+              <img src="~/src/img/tem3.png" alt="3D Web 3" />
+            </div>
+          </div>
+          <div class="category-card" data-category="saasplatforms">
+            <div class="category-card__icon"><i class="ri-cloud-line"></i></div>
+            <div class="category-card__title">@Localizer["SaasPlatforms"]</div>
+        <div class="category-card__desc">@Localizer["ReadyMadeTemplates"]</div>
+            <div class="category-card__images">
+              <img src="~/src/img/tem7.png" alt="Saas 1" />
+              <img src="~/src/img/tem8.png" alt="Saas 2" />
+              <img src="~/src/img/tem9.png" alt="Saas 3" />
+            </div>
+          </div>
+          <div class="category-card" data-category="agency">
+            <div class="category-card__icon"><i class="ri-bar-chart-grouped-line"></i></div>
+            <div class="category-card__title">@Localizer["Agency"]</div>
+        <div class="category-card__desc">@Localizer["ReadyMadeTemplates"]</div>
+            <div class="category-card__images">
+              <img src="~/src/img/tem10.png" alt="Agency 1" />
+              <img src="~/src/img/tem11.png" alt="Agency 2" />
+              <img src="~/src/img/tem12.png" alt="Agency 3" />
+            </div>
+          </div>
+          <div class="category-card" data-category="portfoliodesign">
+            <div class="category-card__icon"><i class="ri-briefcase-4-line"></i></div>
+            <div class="category-card__title">@Localizer["PortfolioDesign"]</div>
+        <div class="category-card__desc">@Localizer["ReadyMadeTemplates"]</div>
+            <div class="category-card__images">
+              <img src="~/src/img/tem4.png" alt="Portfolio 1" />
+              <img src="~/src/img/tem5.png" alt="Portfolio 2" />
+              <img src="~/src/img/tem6.png" alt="Portfolio 3" />
+            </div>
+          </div>
+          <div class="category-card" data-category="ecommerce">
+            <div class="category-card__icon"><i class="ri-shopping-bag-3-line"></i></div>
+            <div class="category-card__title">@Localizer["Ecommerce"]</div>
+        <div class="category-card__desc">@Localizer["ReadyMadeTemplates"]</div>
+            <div class="category-card__images">
+              <img src="~/src/img/tem4.png" alt="Ecommerce 1" />
+              <img src="~/src/img/tem5.png" alt="Ecommerce 2" />
+              <img src="~/src/img/tem6.png" alt="Ecommerce 3" />
+            </div>
+          </div>
+          <div class="category-card" data-category="education">
+            <div class="category-card__icon"><i class="ri-book-open-line"></i></div>
+            <div class="category-card__title">@Localizer["Education"]</div>
+        <div class="category-card__desc">@Localizer["ReadyMadeTemplates"]</div>
+            <div class="category-card__images">
+              <img src="~/src/img/tem3.png" alt="Education 1" />
+              <img src="~/src/img/tem4.png" alt="Education 2" />
+              <img src="~/src/img/tem5.png" alt="Education 3" />
+            </div>
+          </div>
+          <div class="category-card" data-category="health">
+            <div class="category-card__icon"><i class="ri-heart-pulse-line"></i></div>
+            <div class="category-card__title">@Localizer["Health"]</div>
+        <div class="category-card__desc">@Localizer["ReadyMadeTemplates"]</div>
+            <div class="category-card__images">
+              <img src="~/src/img/tem6.png" alt="Health 1" />
+              <img src="~/src/img/tem7.png" alt="Health 2" />
+              <img src="~/src/img/tem8.png" alt="Health 3" />
+            </div>
+          </div>
+          <div class="category-card" data-category="marketing">
+            <div class="category-card__icon"><i class="ri-megaphone-line"></i></div>
+            <div class="category-card__title">@Localizer["Marketing"]</div>
+        <div class="category-card__desc">@Localizer["ReadyMadeTemplates"]</div>
+            <div class="category-card__images">
+              <img src="~/src/img/tem9.png" alt="Marketing 1" />
+              <img src="~/src/img/tem10.png" alt="Marketing 2" />
+              <img src="~/src/img/tem11.png" alt="Marketing 3" />
+            </div>
+          </div>
+          <div class="category-card" data-category="restaurantandfood">
+            <div class="category-card__icon"><i class="ri-restaurant-line"></i></div>
+        <div class="category-card__title">@Localizer["RestaurantFood"]</div>
+        <div class="category-card__desc">@Localizer["ReadyMadeTemplates"]</div>
+            <div class="category-card__images">
+              <img src="~/src/img/tem1.png" alt="Restaurant 1" />
+              <img src="~/src/img/tem2.png" alt="Restaurant 2" />
+              <img src="~/src/img/tem3.png" alt="Restaurant 3" />
+            </div>
+          </div>
+          <div class="category-card" data-category="gamingandentertainment">
+            <div class="category-card__icon"><i class="ri-gamepad-line"></i></div>
+        <div class="category-card__title">@Localizer["GamingEntertainment"]</div>
+        <div class="category-card__desc">@Localizer["ReadyMadeTemplates"]</div>
+            <div class="category-card__images">
+              <img src="~/src/img/tem7.png" alt="Gaming 1" />
+              <img src="~/src/img/tem8.png" alt="Gaming 2" />
+              <img src="~/src/img/tem9.png" alt="Gaming 3" />
+            </div>
+          </div>
+          <div class="category-card" data-category="realestate">
+            <div class="category-card__icon"><i class="ri-home-4-line"></i></div>
+            <div class="category-card__title">@Localizer["RealEstate"]</div>
+        <div class="category-card__desc">@Localizer["ReadyMadeTemplates"]</div>
+            <div class="category-card__images">
+              <img src="~/src/img/tem10.png" alt="Real Estate 1" />
+              <img src="~/src/img/tem11.png" alt="Real Estate 2" />
+              <img src="~/src/img/tem12.png" alt="Real Estate 3" />
+            </div>
+          </div>
+        </div>
+
+<style>
+    .category-card {
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .category-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 224, 255, 0.1) 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 1;
+        pointer-events: none;
+    }
+    
+    .category-card:hover::before {
+        opacity: 1;
+    }
+    
+    .category-card:active {
+        transform: translateY(-2px) scale(0.98);
+    }
+    
+    .category-card * {
+        position: relative;
+        z-index: 2;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const categoryCards = document.querySelectorAll('.category-card');
+        
+        // Маппинг data-category в правильные названия категорий
+        const categoryMapping = {
+            'business': 'Business',
+            'threedweb': '3D Web',
+            'saasplatforms': 'Saas Platforms',
+            'agency': 'Agency',
+            'portfoliodesign': 'Portfolio Design',
+            'ecommerce': 'Ecommerce',
+            'education': 'Education',
+            'health': 'Health',
+            'marketing': 'Marketing',
+            'restaurantandfood': 'Restaurant & Food',
+            'gamingandentertainment': 'Gaming & Entertainment',
+            'realestate': 'Real Estate'
+        };
+        
+        categoryCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const categoryKey = this.getAttribute('data-category');
+                const categoryName = categoryMapping[categoryKey];
+                
+                if (categoryName) {
+                    // Добавляем эффект нажатия
+                    this.style.transform = 'translateY(-2px) scale(0.98)';
+                    
+                    // Перенаправляем на страницу продуктов с фильтром по категории
+                    setTimeout(() => {
+                        window.location.href = `/Products?category=${encodeURIComponent(categoryName)}`;
+                    }, 150);
+                }
+            });
+            
+            // Убираем эффект нажатия при отпускании
+            card.addEventListener('mouseup', function() {
+                this.style.transform = '';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+    });
+</script>

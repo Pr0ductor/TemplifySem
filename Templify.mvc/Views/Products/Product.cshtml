@@ -1,0 +1,281 @@
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@model Templify.mvc.Models.ProductViewModel
+@{
+    ViewData["Title"] = Model.Product.Name;
+    var product = Model.Product;
+}
+<div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+    <!-- Hero Section -->
+    <div style="background: #f5f5f5; border-radius: 24px; overflow: hidden; margin-bottom: 32px; position: relative;">
+        <img src="@Url.Content(product.ImageUrl)" alt="@product.Name" style="width: 100%; height: 400px; object-fit: cover; display: block;">
+        <!-- Price Badge -->
+        <div style="position: absolute; top: 24px; right: 24px; background: #00ff88; color: #111; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.4rem; box-shadow: 0 4px 20px rgba(0,255,136,0.3);">
+            $@product.Price
+        </div>
+        <!-- Bottom Overlay -->
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); padding: 24px 32px; border-radius: 24px 24px 0 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <img src="@Url.Content(product.AuthorAvatarUrl)" alt="@product.Author" style="width: 48px; height: 48px; border-radius: 12px; object-fit: cover;">
+                    <div>
+                        <h1 style="color: #fff; font-size: 2rem; font-weight: 800; margin: 0;">@product.Name</h1>
+                        <p style="color: #b0b0b0; font-size: 1rem; margin: 0;">@Localizer["Author"]: <a href="@Url.Action("Author", "Authors", new { id = product.AuthorId })" style="color: #fff; font-weight: 600; text-decoration: underline;">@product.Author</a></p>
+                        <p style="color: #b0b0b0; font-size: 1rem; margin: 0;">@Localizer["Category"]: <span style="color: #fff; font-weight: 600;">@product.Category</span></p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Content Section -->
+    <div style="display: grid; grid-template-columns: 1fr 320px; gap: 32px;">
+        <!-- Main Content -->
+        <div>
+            <!-- Tabs -->
+            <div style="display: flex; gap: 8px; margin-bottom: 32px; background: #232526; border-radius: 16px; padding: 8px;">
+                <button style="background: #00ff88; color: #111; border: none; border-radius: 12px; padding: 12px 24px; font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <i class="ri-file-text-line"></i> @Localizer["Description"]
+                </button>
+               
+            </div>
+            <!-- Description -->
+            <div style="background: #181a1b; border-radius: 20px; padding: 40px; border: 2px solid #23272a;">
+                <h3 style="color: #fff; font-size: 1.8rem; font-weight: 700; margin-bottom: 24px;">@Localizer["KeyInfo"]</h3>
+                <ul style="color: #ccc; font-size: 1.1rem; margin-bottom: 24px;">
+                    <li><b>@Localizer["Price"]:</b> $@product.Price</li>
+                    <li><b>@Localizer["Author"]:</b> <a href="@Url.Action("Author", "Authors", new { id = product.AuthorId })" style="color: #fff; font-weight: 600; text-decoration: underline;">@product.Author</a></li>
+                    <li><b>@Localizer["Category"]:</b> @product.Category</li>
+                    <li><b>@Localizer["Downloads"]:</b> @product.Downloads</li>
+                    <li><b>@Localizer["Tags"]:</b> @product.Tags</li>
+                </ul>
+                <h3 style="color: #fff; font-size: 1.8rem; font-weight: 700; margin-bottom: 16px;">@Localizer["Aboutthisproduct"]</h3>
+                <p style="color: #ccc; line-height: 1.6; margin-bottom: 24px;">
+                    @product.Description
+                </p>
+                <h3 style="color: #fff; font-size: 1.8rem; font-weight: 700; margin-bottom: 16px;">@Localizer["Whychoose"]</h3>
+                <p style="color: #ccc; line-height: 1.6; margin-bottom: 24px;">
+                    - @Localizer["Professionaldesign"]<br />
+                    - @Localizer["Easycustomization"]<br />
+                    - @Localizer["Freeupdates"]<br />
+                    - @Localizer["Detaileddocumentation"]<br />
+                    - @Localizer["Fastsupport"]
+                </p>
+            </div>
+        </div>
+        <!-- Sidebar -->
+        <div style="height: fit-content;">
+            <div style="background: #232526; border-radius: 20px; padding: 32px; border: 2px solid #2e2e32; box-shadow: 0 8px 32px rgba(0,0,0,0.2);">
+                <h3 style="color: #fff; font-size: 1.3rem; font-weight: 700; margin-bottom: 24px;">@Localizer["WhatsIncluded"]</h3>
+                <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 24px; height: 24px; background: #00ff88; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="ri-check-line" style="color: #111; font-size: 0.9rem;"></i>
+                        </div>
+                        <span style="color: #ccc; font-size: 1rem;">@Localizer["FramerTemplate"]</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 24px; height: 24px; background: #00ff88; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="ri-check-line" style="color: #111; font-size: 0.9rem;"></i>
+                        </div>
+                        <span style="color: #ccc; font-size: 1rem;">@Localizer["ResponsiveDesign"]</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 24px; height: 24px; background: #00ff88; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="ri-check-line" style="color: #111; font-size: 0.9rem;"></i>
+                        </div>
+                        <span style="color: #ccc; font-size: 1rem;">@Localizer["Freeupdates"]</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 24px; height: 24px; background: #00ff88; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="ri-check-line" style="color: #111; font-size: 0.9rem;"></i>
+                        </div>
+                        <span style="color: #ccc; font-size: 1rem;">@Localizer["Documentation"]</span>
+                    </div>
+                </div>
+                <button id="purchaseBtn" onclick="purchaseTemplate()" style="background: linear-gradient(90deg, #00ff88 0%, #00e0ff 100%); color: #111; border: none; border-radius: 12px; padding: 16px 24px; font-weight: 700; font-size: 1.1rem; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s ease;">
+                    <i class="ri-shopping-cart-line"></i> <span id="purchaseBtnText">@Localizer["PurchaseNow "]- $@product.Price</span>
+                </button>
+                
+                <div id="authorStatus" style="display: none; background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 12px; padding: 20px; text-align: center;">
+                    <div style="color: #ffc107; font-size: 2rem; margin-bottom: 12px;"><i class="ri-user-star-line"></i></div>
+                    <h4 style="color: #ffc107; margin: 0 0 8px 0; font-size: 1.1rem;">@Localizer["Youaretheauthor"]</h4>
+                    <p style="color: #ccc; margin: 0; font-size: 0.9rem;">@Localizer["Youcannot"]</p>
+                </div>
+                
+                <div id="purchasedStatus" style="display: none; background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 12px; padding: 20px; text-align: center; margin-top: 16px;">
+                    <div style="color: #00ff88; font-size: 2rem; margin-bottom: 12px;"><i class="ri-check-line"></i></div>
+                    <h4 style="color: #00ff88; margin: 0 0 8px 0; font-size: 1.1rem;">@Localizer["TemplatePurchased"]</h4>
+                    <p style="color: #ccc; margin: 0; font-size: 0.9rem;">@Localizer["Youcandownload"]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let productId = @product.Id;
+    let isPurchased = false;
+    let isAuthor = false;
+    
+    console.log('Product ID from model:', @product.Id);
+    console.log('Product ID variable:', productId);
+
+    async function purchaseTemplate() {
+        // Check if user is authenticated
+        @if (!User.Identity?.IsAuthenticated == true)
+        {
+            <text>
+            // Redirect to login if not authenticated
+            window.location.href = '@Url.Action("Index", "Auth")';
+            return;
+            </text>
+        }
+        
+        if (isPurchased || isAuthor) {
+            return;
+        }
+        
+        // Show loading state
+        const purchaseBtn = document.getElementById('purchaseBtn');
+        const purchaseBtnText = document.getElementById('purchaseBtnText');
+        const originalText = purchaseBtnText.textContent;
+        purchaseBtnText.textContent = 'Processing...';
+        purchaseBtn.disabled = true;
+        
+        try {
+            console.log('Sending purchase request for product:', productId);
+            
+            const response = await fetch('/Products/Purchase', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    productId: productId
+                })
+            });
+            
+            console.log('Response status:', response.status);
+            console.log('Response ok:', response.ok);
+            
+            const data = await response.json();
+            console.log('Response data:', data);
+            
+            if (data.success) {
+                console.log('Purchase successful');
+                isPurchased = true;
+                showPurchasedStatus();
+                showSuccessMessage(data.message);
+            } else {
+                console.log('Purchase failed:', data.error);
+                showErrorMessage(data.error || 'Failed to purchase template');
+            }
+        } catch (error) {
+            console.error('Purchase error:', error);
+            showErrorMessage('An error occurred while processing your purchase');
+        } finally {
+            // Reset button
+            purchaseBtnText.textContent = originalText;
+            purchaseBtn.disabled = false;
+        }
+    }
+
+    function showPurchasedStatus() {
+        document.getElementById('purchaseBtn').style.display = 'none';
+        document.getElementById('purchasedStatus').style.display = 'block';
+    }
+
+    function showAuthorStatus() {
+        document.getElementById('purchaseBtn').style.display = 'none';
+        document.getElementById('authorStatus').style.display = 'block';
+    }
+
+    function showSuccessMessage(message) {
+        showMessage(message, 'success');
+    }
+
+    function showErrorMessage(message) {
+        showMessage(message, 'error');
+    }
+
+    function showMessage(message, type) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message message-${type}`;
+        messageDiv.innerHTML = `
+            <div class="message-content">
+                <div class="message-icon">${type === 'success' ? '✓' : '✕'}</div>
+                <p>${message}</p>
+            </div>
+        `;
+        
+        // Add styles
+        messageDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'success' ? 'linear-gradient(135deg, #00ff88 0%, #00e0ff 100%)' : 'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)'};
+            color: ${type === 'success' ? '#111' : '#fff'};
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            z-index: 10000;
+            animation: slideInRight 0.3s ease-out;
+            max-width: 300px;
+        `;
+        
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @@keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            .message-content { display: flex; align-items: center; gap: 12px; }
+            .message-icon { font-size: 1.5rem; font-weight: bold; }
+            .message p { margin: 0; font-size: 0.9rem; line-height: 1.3; }
+        `;
+        document.head.appendChild(style);
+        
+        document.body.appendChild(messageDiv);
+        
+        // Remove after 5 seconds
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.parentNode.removeChild(messageDiv);
+            }
+        }, 5000);
+    }
+
+    // Check purchase status and author status on page load
+    document.addEventListener('DOMContentLoaded', async function() {
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <text>
+            try {
+                // Check if user is the author
+                const authorResponse = await fetch(`/Products/IsAuthorOfProduct?productId=${productId}`);
+                const authorData = await authorResponse.json();
+                
+                if (authorData.success && authorData.isAuthor) {
+                    isAuthor = true;
+                    showAuthorStatus();
+                    return; // Don't check purchase status if user is author
+                }
+                
+                // Check purchase status
+                const response = await fetch(`/Products/HasPurchased?productId=${productId}`);
+                const data = await response.json();
+                
+                if (data.success && data.hasPurchased) {
+                    isPurchased = true;
+                    showPurchasedStatus();
+                }
+            } catch (error) {
+                console.error('Error checking status:', error);
+            }
+            </text>
+        }
+    });
+</script>

@@ -1,0 +1,392 @@
+@model Templify.Application.Features.Products.Commands.CreateProductCommand
+@{
+    ViewData["Title"] = "Добавить продукт";
+}
+
+<div class="products-container">
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Добавить продукт</h1>
+            <p>Создание нового продукта на платформе</p>
+        </div>
+        <div class="header-actions">
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                Назад к списку
+            </a>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <!-- Отображение ошибок валидации -->
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                <h4>Ошибки валидации:</h4>
+                <div asp-validation-summary="All" class="text-danger"></div>
+            </div>
+        }
+        
+        <form asp-action="Create" method="post" class="product-form" enctype="multipart/form-data">
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Name">Название продукта *</label>
+                    <input asp-for="Name" class="form-control" placeholder="Введите название продукта" />
+                    <span asp-validation-for="Name" class="validation-error"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AuthorId">Автор *</label>
+                    <select asp-for="AuthorId" class="form-control" asp-items="ViewBag.Authors">
+                        <option value="">Выберите автора</option>
+                    </select>
+                    <span asp-validation-for="AuthorId" class="validation-error"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description">Описание *</label>
+                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Подробное описание продукта..."></textarea>
+                <span asp-validation-for="Description" class="validation-error"></span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Category">Категория *</label>
+                    <select asp-for="Category" class="form-control">
+                        <option value="">Выберите категорию</option>
+                        <option value="business">Business</option>
+                        <option value="3d web">3D Web</option>
+                        <option value="saas platforms">Saas Platforms</option>
+                        <option value="agency">Agency</option>
+                        <option value="portfolio design">Portfolio Design</option>
+                        <option value="ecommerce">Ecommerce</option>
+                        <option value="education">Education</option>
+                        <option value="health">Health</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="restaurant & food">Restaurant & Food</option>
+                        <option value="gaming & entertainment">Gaming & Entertainment</option>
+                        <option value="real estate">Real Estate</option>
+                    </select>
+                    <span asp-validation-for="Category" class="validation-error"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Price">Цена ($) *</label>
+                    <input asp-for="Price" class="form-control" type="number" min="0" step="0.01" placeholder="0.00" />
+                    <span asp-validation-for="Price" class="validation-error"></span>
+                    <small class="form-help">Укажите 0 для бесплатного продукта</small>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="productImage">Изображение продукта</label>
+                    <input type="file" id="productImage" name="productImage" class="form-control" accept="image/*" />
+                    <small class="form-help">Загрузите изображение для превью продукта</small>
+                    <div id="imagePreview" class="image-preview" style="display: none;">
+                        <img id="previewImg" src="" alt="Предпросмотр" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Tags">Теги</label>
+                    <input asp-for="Tags" class="form-control" placeholder="tag1, tag2, tag3" />
+                    <small class="form-help">Теги через запятую для лучшего поиска</small>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Создать продукт
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-times"></i>
+                    Отмена
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.products-container {
+    padding: 24px;
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-content h1 {
+    margin: 0 0 8px 0;
+    color: #1a1a1a;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.header-content p {
+    margin: 0;
+    color: #666;
+    font-size: 16px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-secondary {
+    background: #f8f9fa;
+    color: #666;
+    border: 1px solid #e0e0e0;
+}
+
+.btn-secondary:hover {
+    background: #e9ecef;
+    color: #666;
+    text-decoration: none;
+}
+
+.content-section {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    padding: 32px;
+}
+
+.product-form {
+    max-width: 800px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #1a1a1a;
+    font-size: 14px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 14px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-control::placeholder {
+    color: #999;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.validation-error {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+
+.form-help {
+    color: #666;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+
+.alert {
+    padding: 16px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.image-preview {
+    margin-top: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 8px;
+    text-align: center;
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 100px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.form-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: flex-start;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #f0f0f0;
+}
+
+@@media (max-width: 768px) {
+    .products-container {
+        padding: 16px;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+    
+    .header-actions {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .content-section {
+        padding: 24px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .btn {
+        justify-content: center;
+    }
+}
+</style>
+
+<script>
+// Предпросмотр изображения
+document.getElementById('productImage').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+    } else {
+        preview.style.display = 'none';
+    }
+});
+
+// Валидация формы
+document.querySelector('form').addEventListener('submit', function(e) {
+    const name = document.querySelector('input[asp-for="Name"]').value.trim();
+    const description = document.querySelector('textarea[asp-for="Description"]').value.trim();
+    const category = document.querySelector('select[asp-for="Category"]').value;
+    const price = document.querySelector('input[asp-for="Price"]').value;
+    const authorId = document.querySelector('select[asp-for="AuthorId"]').value;
+    const productImage = document.getElementById('productImage').files[0];
+    
+    // Проверяем валидность
+    if (!name) {
+        alert('Название обязательно для заполнения');
+        e.preventDefault();
+        return false;
+    }
+    
+    if (!description) {
+        alert('Описание обязательно для заполнения');
+        e.preventDefault();
+        return false;
+    }
+    
+    if (!category) {
+        alert('Выберите категорию');
+        e.preventDefault();
+        return false;
+    }
+    
+    if (!price || price < 0) {
+        alert('Цена должна быть больше или равна 0');
+        e.preventDefault();
+        return false;
+    }
+    
+    if (!authorId) {
+        alert('Выберите автора');
+        e.preventDefault();
+        return false;
+    }
+    
+    // Изображение необязательно - можно создать продукт без изображения
+    console.log('Form validation passed');
+});
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

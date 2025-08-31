@@ -1,0 +1,688 @@
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@model Templify.mvc.Models.SettingsViewModel
+@{
+    ViewData["Title"] = @Localizer["Settings"];
+}
+<div class="content">
+    <div class="container">
+        <div class="settings-page">
+            <div></div>
+            <div class="settings-header">
+                <h1><i class="ri-settings-3-line"></i> @Localizer["AccountSettings"]</h1>
+                <p>@Localizer["Manageyourprofile"]</p>
+            </div>
+
+            @if (TempData["Success"] != null)
+            {
+                <div id="toast-success" class="custom-toast custom-toast--success">
+                    <i class="ri-checkbox-circle-line"></i>
+                    <span>@TempData["Success"]</span>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div id="toast-error" class="custom-toast custom-toast--error">
+                    <i class="ri-close-circle-line"></i>
+                    <span>@TempData["Error"]</span>
+                </div>
+            }
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <div>@error.ErrorMessage</div>
+                    }
+                </div>
+            }
+            <div class="settings-content">
+                <div></div><div></div>
+                <!-- Profile Information Section -->
+                <div class="settings-section">
+                    <div></div>
+                    <h2><i class="ri-user-settings-line"></i> @Localizer["ProfileInformation"]</h2>
+                    <div class="profile-form">
+                        <form asp-action="UpdateProfile" method="post" enctype="multipart/form-data">
+                            <div class="avatar-section">
+                                <div class="current-avatar">
+                                    <img src="@Url.Content(Model.CurrentAvatarUrl ?? "/src/img/person1.jpg")" alt="Current Avatar" id="currentAvatar" style="width:120px;height:120px;border-radius:50%;object-fit:cover;" />
+                                </div>
+                                <div class="avatar-upload">
+                                    <label for="avatarFile" class="avatar-upload-btn">
+                                        <i class="ri-camera-line"></i>
+                                        @Localizer["ChangePhoto"]
+                                    </label>
+                                    <input type="file" id="avatarFile" name="AvatarFile" accept="image/*" style="display: none;" />
+                                    <small style="color: #999; margin-top: 8px; display: block;">@Localizer["Recommended"]</small>
+                                </div>
+                            </div>
+                            @Html.AntiForgeryToken()
+                            <div class="form-group">
+                                <label asp-for="Username"></label>
+                                <input asp-for="Username" class="form-control" />
+                                <span asp-validation-for="Username" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Description">@Localizer["AboutMe"]</label>
+                                <textarea asp-for="Description" class="form-control" rows="4" placeholder="@Localizer["Tellus"]"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Email"></label>
+                                <input asp-for="Email" class="form-control" readonly />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                                <small><i class="ri-information-line"></i> @Localizer["Emailcannot"]</small>
+                            </div>
+                            <input type="hidden" asp-for="Avatar" />
+                            <button type="submit" class="save-btn">
+                                <i class="ri-save-line"></i>
+                                @Localizer["SaveChanges"]
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <!-- Change Password Section -->
+                <div class="settings-section">
+                    <h2><i class="ri-lock-password-line"></i> @Localizer["SecuritySettings"]</h2>
+                    <div class="password-form">
+                        <form asp-action="ChangePassword" method="post">
+                            @Html.AntiForgeryToken()
+                            <div class="form-group">
+                                <label for="CurrentPassword">@Localizer["CurrentPassword"]</label>
+                                <input type="password" name="CurrentPassword" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="NewPassword">@Localizer["NewPassword"]</label>
+                                <input type="password" name="NewPassword" class="form-control" required />
+                                <small><i class="ri-information-line"></i> @Localizer["Passwordmust"]</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="ConfirmPassword">@Localizer["ConfirmNewPassword"]</label>
+                                <input type="password" name="ConfirmPassword" class="form-control" required />
+                            </div>
+                            <button type="submit" class="change-password-btn">
+                                <i class="ri-shield-check-line"></i>
+                                @Localizer["ChangePassword"]
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Delete Account Section -->
+                <div class="settings-section danger-zone">
+                    <h2><i class="ri-delete-bin-line"></i> @Localizer["DangerZone"]</h2>
+                    <div class="danger-zone-content">
+                        <div class="danger-warning">
+                            <i class="ri-error-warning-line"></i>
+                            <div class="warning-text">
+                                <h3>@Localizer["DangerZone"]</h3>
+                                <p>@Localizer["Onceyou"]</p>
+                                <ul>
+                                    <li>@Localizer["Allyour"]</li>
+                                    <li>@Localizer["Yourprofile"]</li>
+                                    <li>@Localizer["Thisaction"]</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <button type="button" class="delete-account-btn" onclick="showDeleteConfirmation()">
+                            <i class="ri-delete-bin-line"></i>
+                            @Localizer["DeleteMyAccount"]
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Confirmation Modal -->
+<div id="deleteModal" class="modal-overlay">
+    <div class="delete-modal">
+        <h3>
+            <i class="ri-error-warning-line"></i>
+            @Localizer["DangerZone"]
+        </h3>
+        <p>
+            @Localizer["Areyouabsolutely"]
+        </p>
+        <div class="modal-buttons">
+            <button type="button" class="modal-btn modal-btn-cancel" onclick="hideDeleteConfirmation()">
+                @Localizer["Cancel"]
+            </button>
+            <form asp-action="DeleteAccount" method="post" style="display: inline;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="modal-btn modal-btn-delete">
+                    <i class="ri-delete-bin-line"></i>
+                    @Localizer["DangerZone"]
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .settings-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .settings-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .settings-header h1 {
+        color: #00ff88;
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .settings-header p {
+        color: #ccc;
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .settings-content {
+        display: grid;
+        gap: 30px;
+    }
+
+    .settings-section {
+        background: #232526;
+        border-radius: 16px;
+        padding: 30px;
+        border: 1px solid #333;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .settings-section h2 {
+        color: #00ff88;
+        font-size: 1.5rem;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .profile-form, .password-form {
+        display: grid;
+        gap: 20px;
+    }
+
+    .avatar-section {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .avatar-upload-btn {
+        background: linear-gradient(135deg, #00ff88, #00e0ff);
+        color: #000;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .avatar-upload-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 255, 136, 0.3);
+    }
+
+    .form-group {
+        display: grid;
+        gap: 8px;
+    }
+
+    .form-group label {
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .form-control {
+        background: #1a1b1c;
+        border: 2px solid #333;
+        border-radius: 8px;
+        padding: 12px 16px;
+        color: #fff;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #00ff88;
+        box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+    }
+
+    .form-control[readonly] {
+        background: #2a2b2c;
+        color: #999;
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .text-danger {
+        color: #ff6b6b;
+        font-size: 0.9rem;
+    }
+
+    .save-btn, .change-password-btn {
+        background: linear-gradient(135deg, #00ff88, #00e0ff);
+        color: #000;
+        border: none;
+        padding: 14px 28px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+    }
+
+    .save-btn:hover, .change-password-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 255, 136, 0.3);
+    }
+
+    /* Danger Zone Styles */
+    .danger-zone {
+        border: 2px solid #ff6b6b;
+        background: linear-gradient(135deg, #232526 0%, #2a1a1a 100%);
+    }
+
+    .danger-zone h2 {
+        color: #ff6b6b;
+    }
+
+    .danger-zone-content {
+        display: grid;
+        gap: 20px;
+    }
+
+    .danger-warning {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        background: rgba(255, 107, 107, 0.1);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        border-radius: 12px;
+        padding: 20px;
+    }
+
+    .danger-warning i {
+        color: #ff6b6b;
+        font-size: 24px;
+        margin-top: 2px;
+    }
+
+    .warning-text h3 {
+        color: #ff6b6b;
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+    }
+
+    .warning-text p {
+        color: #ccc;
+        margin-bottom: 15px;
+        line-height: 1.6;
+    }
+
+    .warning-text ul {
+        color: #ccc;
+        margin-left: 20px;
+    }
+
+    .warning-text li {
+        margin-bottom: 5px;
+        line-height: 1.5;
+    }
+
+    .delete-account-btn {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+        color: white;
+        border: none;
+        padding: 14px 28px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        justify-self: start;
+    }
+
+    .delete-account-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(255, 107, 107, 0.3);
+        background: linear-gradient(135deg, #ff5252, #d32f2f);
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-overlay.show {
+        display: flex;
+    }
+
+    .delete-modal {
+        background: #232526;
+        border: 2px solid #ff6b6b;
+        border-radius: 16px;
+        padding: 30px;
+        max-width: 500px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        animation: modalSlideIn 0.3s ease;
+    }
+
+    @@keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-50px) scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .delete-modal h3 {
+        color: #ff6b6b;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .delete-modal p {
+        color: #ccc;
+        margin-bottom: 25px;
+        line-height: 1.6;
+    }
+
+    .modal-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .modal-btn {
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+        font-size: 1rem;
+    }
+
+    .modal-btn-cancel {
+        background: #333;
+        color: #fff;
+    }
+
+    .modal-btn-cancel:hover {
+        background: #444;
+        transform: translateY(-2px);
+    }
+
+    .modal-btn-delete {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+        color: white;
+    }
+
+    .modal-btn-delete:hover {
+        background: linear-gradient(135deg, #ff5252, #d32f2f);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(255, 107, 107, 0.3);
+    }
+
+    .custom-toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #232526;
+        border: 1px solid #333;
+        border-radius: 12px;
+        padding: 16px 20px;
+        color: #fff;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        transform: translateX(400px);
+        transition: transform 0.5s ease;
+        opacity: 0;
+    }
+
+    .custom-toast.show {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    .custom-toast.hide {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+
+    .custom-toast--success {
+        border-left: 4px solid #00ff88;
+    }
+
+    .custom-toast--success i {
+        color: #00ff88;
+    }
+
+    .custom-toast--error {
+        border-left: 4px solid #ff6b6b;
+    }
+
+    .custom-toast--error i {
+        color: #ff6b6b;
+    }
+
+    @@media (max-width: 1024px) {
+        .settings-content {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (min-width: 1025px) {
+        .settings-content {
+            grid-template-columns: 1fr 1fr;
+            align-items: start;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .settings-page {
+            padding: 20px 10px;
+        }
+
+        .settings-header h1 {
+            font-size: 2rem;
+        }
+
+        .avatar-section {
+            flex-direction: column;
+            text-align: center;
+            align-items: center;
+        }
+
+        .settings-section {
+            padding: 20px;
+        }
+
+        .danger-warning {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            flex-direction: column;
+        }
+
+        .modal-btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .delete-modal {
+            margin: 20px;
+            padding: 20px;
+        }
+    }
+
+    /* Узкие экраны до 480px: уменьшаем отступы и размеры */
+    @@media (max-width: 480px) {
+        .settings-header h1 { font-size: 1.6rem; }
+        .settings-header p { font-size: 0.95rem; }
+        .settings-section { padding: 16px; border-radius: 12px; }
+        .avatar-section { gap: 16px; }
+        .current-avatar img { width: 96px !important; height: 96px !important; }
+        .avatar-upload-btn { padding: 10px 16px; font-size: 0.95rem; }
+        .form-control { padding: 10px 12px; font-size: 0.95rem; }
+        .save-btn, .change-password-btn, .delete-account-btn { padding: 12px 16px; font-size: 0.95rem; }
+        .warning-text h3 { font-size: 1.05rem; }
+        .warning-text p, .warning-text ul { font-size: 0.95rem; }
+        .delete-modal { width: 94%; padding: 16px; }
+        .modal-btn { padding: 10px 14px; font-size: 0.95rem; }
+    }
+
+    /* Экстремально узкие экраны до 320px/300px */
+    @@media (max-width: 320px) {
+        .settings-page { padding: 16px 8px; }
+        .settings-header h1 { font-size: 1.4rem; gap: 8px; }
+        .settings-header p { font-size: 0.9rem; }
+        .current-avatar img { width: 84px !important; height: 84px !important; }
+        .avatar-upload-btn { padding: 8px 12px; font-size: 0.9rem; }
+        .form-control { padding: 8px 10px; font-size: 0.9rem; }
+        .save-btn, .change-password-btn, .delete-account-btn { padding: 10px 12px; font-size: 0.9rem; }
+        .danger-warning { padding: 14px; }
+        .delete-modal { width: 96%; padding: 14px; }
+        .modal-btn { padding: 8px 10px; font-size: 0.9rem; }
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('avatarFile').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    this.value = '';
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('currentAvatar').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Toast auto-hide - показываем уведомления на 5 секунд
+        document.addEventListener('DOMContentLoaded', function() {
+            const toasts = document.querySelectorAll('.custom-toast');
+            console.log('Found toasts:', toasts.length);
+            
+            toasts.forEach(function(toast, index) {
+                console.log('Processing toast', index);
+                
+                // Сначала показываем уведомление
+                setTimeout(() => {
+                    console.log('Showing toast', index);
+                    toast.classList.add('show');
+                }, 100);
+                
+                // Скрываем через 5 секунд
+                setTimeout(function() {
+                    console.log('Hiding toast', index);
+                    toast.classList.add('hide');
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.remove();
+                            console.log('Removed toast', index);
+                        }
+                    }, 500);
+                }, 5000);
+            });
+        });
+
+        // Delete Account Modal Functions
+        function showDeleteConfirmation() {
+            const modal = document.getElementById('deleteModal');
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function hideDeleteConfirmation() {
+            const modal = document.getElementById('deleteModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideDeleteConfirmation();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideDeleteConfirmation();
+            }
+        });
+    </script>
+}

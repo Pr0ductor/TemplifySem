@@ -1,0 +1,462 @@
+@{
+    ViewData["Title"] = "Product Details";
+    ViewData["Subtitle"] = "View product information";
+    Layout = "_AdminLayout";
+}
+
+<div class="page-header">
+    <div class="header-content">
+        <h2><i class="fas fa-box"></i> Product Details</h2>
+        <p>Business Template Pro</p>
+    </div>
+    <div class="header-actions">
+        <a href="@Url.Action("Edit", "Products", new { area = "Admin", id = 1 })" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Edit
+        </a>
+        <a href="@Url.Action("Index", "Products", new { area = "Admin" })" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Products
+        </a>
+    </div>
+</div>
+
+<div class="product-details-container">
+    <div class="product-main-info">
+        <div class="product-image-section">
+            <img src="https://via.placeholder.com/400x300" alt="Product" class="product-main-image">
+            <div class="product-status">
+                <span class="badge badge-success">Active</span>
+            </div>
+        </div>
+        
+        <div class="product-info-section">
+            <h3>Business Template Pro</h3>
+            <p class="product-description">
+                Professional business website template with modern design, responsive layout, and comprehensive features for corporate websites.
+            </p>
+            
+            <div class="product-meta">
+                <div class="meta-item">
+                    <strong>Price:</strong>
+                    <span class="price">$29.99</span>
+                </div>
+                <div class="meta-item">
+                    <strong>Category:</strong>
+                    <span class="badge badge-primary">Business</span>
+                </div>
+                <div class="meta-item">
+                    <strong>Downloads:</strong>
+                    <span>1,234</span>
+                </div>
+                <div class="meta-item">
+                    <strong>Created:</strong>
+                    <span>2024-12-01</span>
+                </div>
+            </div>
+            
+            <div class="product-tags">
+                <strong>Tags:</strong>
+                <span class="tag">business</span>
+                <span class="tag">template</span>
+                <span class="tag">responsive</span>
+                <span class="tag">corporate</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="product-details-grid">
+        <div class="detail-card">
+            <h4><i class="fas fa-user-tie"></i> Author Information</h4>
+            <div class="author-details">
+                <div class="author-avatar">JD</div>
+                <div class="author-info">
+                    <strong>John Doe</strong>
+                    <span>@@johndoe</span>
+                    <span>john.doe@example.com</span>
+                </div>
+            </div>
+            <div class="author-stats">
+                <div class="stat">
+                    <span class="stat-number">15</span>
+                    <span class="stat-label">Products</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">234</span>
+                    <span class="stat-label">Subscribers</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">$2,450</span>
+                    <span class="stat-label">Revenue</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="detail-card">
+            <h4><i class="fas fa-chart-line"></i> Performance</h4>
+            <div class="performance-stats">
+                <div class="stat">
+                    <span class="stat-number">1,234</span>
+                    <span class="stat-label">Total Downloads</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">89</span>
+                    <span class="stat-label">This Month</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">4.8</span>
+                    <span class="stat-label">Rating</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">156</span>
+                    <span class="stat-label">Reviews</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="detail-card">
+            <h4><i class="fas fa-file-archive"></i> Files</h4>
+            <div class="file-list">
+                <div class="file-item">
+                    <i class="fas fa-file-archive"></i>
+                    <span>business-template-pro.zip</span>
+                    <span class="file-size">15.2 MB</span>
+                </div>
+                <div class="file-item">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>documentation.pdf</span>
+                    <span class="file-size">2.1 MB</span>
+                </div>
+                <div class="file-item">
+                    <i class="fas fa-file-image"></i>
+                    <span>preview-images.zip</span>
+                    <span class="file-size">8.7 MB</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="detail-card">
+            <h4><i class="fas fa-history"></i> Recent Activity</h4>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <div class="activity-details">
+                        <strong>New download</strong>
+                        <span>User: mike.wilson@example.com</span>
+                        <span class="activity-time">2 hours ago</span>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="activity-details">
+                        <strong>New review</strong>
+                        <span>5 stars - "Excellent template!"</span>
+                        <span class="activity-time">1 day ago</span>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <div class="activity-details">
+                        <strong>Product updated</strong>
+                        <span>Version 2.1 released</span>
+                        <span class="activity-time">3 days ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #eee;
+    }
+    
+    .header-content h2 {
+        color: #333;
+        margin-bottom: 5px;
+        font-size: 24px;
+    }
+    
+    .header-content h2 i {
+        margin-right: 10px;
+        color: #667eea;
+    }
+    
+    .header-content p {
+        color: #666;
+        font-size: 16px;
+    }
+    
+    .header-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .product-details-container {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 30px;
+    }
+    
+    .product-main-info {
+        display: grid;
+        grid-template-columns: 400px 1fr;
+        gap: 30px;
+        margin-bottom: 40px;
+        padding-bottom: 30px;
+        border-bottom: 2px solid #eee;
+    }
+    
+    .product-image-section {
+        position: relative;
+    }
+    
+    .product-main-image {
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .product-status {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+    
+    .product-info-section h3 {
+        font-size: 28px;
+        color: #333;
+        margin-bottom: 15px;
+    }
+    
+    .product-description {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 25px;
+        font-size: 16px;
+    }
+    
+    .product-meta {
+        margin-bottom: 20px;
+    }
+    
+    .meta-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .meta-item:last-child {
+        border-bottom: none;
+    }
+    
+    .price {
+        font-size: 24px;
+        font-weight: 600;
+        color: #28a745;
+    }
+    
+    .product-tags {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .tag {
+        background: #f8f9fa;
+        color: #666;
+        padding: 5px 12px;
+        border-radius: 15px;
+        font-size: 12px;
+    }
+    
+    .product-details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+    }
+    
+    .detail-card {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 10px;
+        border-left: 4px solid #667eea;
+    }
+    
+    .detail-card h4 {
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .detail-card h4 i {
+        color: #667eea;
+    }
+    
+    .author-details {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .author-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 18px;
+    }
+    
+    .author-info {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .author-info strong {
+        color: #333;
+        font-size: 16px;
+    }
+    
+    .author-info span {
+        color: #666;
+        font-size: 12px;
+    }
+    
+    .author-stats,
+    .performance-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+    
+    .stat {
+        text-align: center;
+    }
+    
+    .stat-number {
+        display: block;
+        font-size: 20px;
+        font-weight: 600;
+        color: #667eea;
+    }
+    
+    .stat-label {
+        font-size: 12px;
+        color: #666;
+        text-transform: uppercase;
+    }
+    
+    .file-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .file-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        background: white;
+        border-radius: 5px;
+    }
+    
+    .file-item i {
+        color: #667eea;
+        width: 20px;
+    }
+    
+    .file-size {
+        margin-left: auto;
+        color: #666;
+        font-size: 12px;
+    }
+    
+    .activity-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .activity-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 15px;
+        background: white;
+        border-radius: 5px;
+    }
+    
+    .activity-icon {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: #667eea;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 14px;
+    }
+    
+    .activity-details {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        flex: 1;
+    }
+    
+    .activity-details strong {
+        color: #333;
+        font-size: 14px;
+    }
+    
+    .activity-details span {
+        color: #666;
+        font-size: 12px;
+    }
+    
+    .activity-time {
+        color: #999 !important;
+        font-size: 11px !important;
+    }
+    
+    @@media (max-width: 768px) {
+        .product-main-info {
+            grid-template-columns: 1fr;
+        }
+        
+        .product-details-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .author-stats,
+        .performance-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>

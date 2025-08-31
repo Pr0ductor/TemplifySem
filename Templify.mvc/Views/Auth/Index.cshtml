@@ -1,0 +1,56 @@
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@model Templify.mvc.Models.LoginModel
+@{
+    ViewData["Title"] = @Localizer["Authorization"];
+}
+
+<section style="flex: 1; background: #181a1b; border-radius: 16px; padding: 40px 32px 32px 32px; display: flex; flex-direction: row; justify-content: space-between; align-items: stretch; min-width: 320px; max-width: 960px; margin-right: 0; border: 2px solid #23272a;">
+          <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start;">
+            <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 16px; margin-top: 0;">@Localizer["WelcomeBack"]</h1>
+        <p style="font-size: 1.1rem; color: #ccc; margin-bottom: 32px;">@Localizer["Wetakepride"]</p>
+            <div style="height: 6px; width: 60%; background: linear-gradient(90deg, #00ff88 60%, transparent 100%); border-radius: 4px;"></div>
+          </div>
+          <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; max-width: 370px; min-width: 280px; background: #232526; border-radius: 16px; border: 2px solid #2e2e32; box-shadow: 0 2px 16px 0 rgba(0,0,0,0.10); padding: 40px 32px;">
+        <h2 style="font-size: 1.7rem; font-weight: 700; margin-bottom: 24px; text-align: center;">@Localizer["SignInToYourAccount"]</h2>
+            
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div style="background: linear-gradient(135deg, #00ff88 0%, #00e0ff 100%); color: #111; padding: 12px; border-radius: 8px; margin-bottom: 18px; font-weight: 600;">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
+            
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div style="background: #ff4444; color: white; padding: 12px; border-radius: 8px; margin-bottom: 18px;">
+                    <div asp-validation-summary="All" style="margin: 0;"></div>
+                </div>
+            }
+            
+            <form asp-action="Login" method="post" class="auth-form" style="display: flex; flex-direction: column; gap: 18px;">
+              <label style="font-weight: 600;">@Localizer["EmailAddress"]
+                <input asp-for="Email" type="email" placeholder="@Localizer["EnterYourEmail"]" style="margin-top: 6px; width: 100%; padding: 12px; border-radius: 8px; border: none; background: #333333; color: #fff; font-size: 1rem;" class="input-white-ph">
+                <span asp-validation-for="Email" style="color: #ff4444; font-size: 0.9rem;"></span>
+              </label>
+              <label style="font-weight: 600;">@Localizer["Password"]
+                <input asp-for="Password" type="password" placeholder="@Localizer["TypeYourPassword"]" style="margin-top: 6px; width: 100%; padding: 12px; border-radius: 8px; border: none; background: #333333; color: #fff; font-size: 1rem;" class="input-white-ph">
+                <span asp-validation-for="Password" style="color: #ff4444; font-size: 0.9rem;"></span>
+              </label>
+              <button type="submit" style="background: linear-gradient(90deg, #00ff88 60%, #00c97b 100%); color: #111; font-weight: 700; border: none; border-radius: 8px; padding: 14px 0; font-size: 1.1rem; margin-top: 8px; width: 100%;">@Localizer["SignIn"]</button>
+            </form>
+            
+            <div style="margin: 18px 0 8px 0; text-align: center; color: #fff; font-size: 1rem;">
+            @Localizer["DontHaveAnAccount"] - <a asp-controller="Auth" asp-action="Register" style="color: #00ff88; text-decoration: underline;">@Localizer["SignUpHere"]</a>
+            </div>
+            </div>
+
+      </section>
+<style>
+    .input-white-ph::placeholder {
+      color: #fff !important;
+      opacity: 1;
+    }
+    .input-white-ph::-webkit-input-placeholder { color: #fff !important; }
+    .input-white-ph:-ms-input-placeholder { color: #fff !important; }
+    .input-white-ph::-ms-input-placeholder { color: #fff !important; }
+  </style>

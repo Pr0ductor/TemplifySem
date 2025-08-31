@@ -1,0 +1,54 @@
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@model (Templify.mvc.Models.AuthorsListViewModel Subscribed, Templify.mvc.Models.AuthorsListViewModel All)
+@if (Model.Subscribed.Authors.Any())
+{
+    <h3 style="margin-bottom: 16px; margin-top: 24px; color: #fff; font-size: 1.5rem; font-weight: 700;">@Localizer["SubscribedAuthors"]</h3>
+    <div class="authors__grid">
+        @foreach (var author in Model.Subscribed.Authors)
+        {
+            <a asp-controller="Authors" asp-action="Author" asp-route-id="@author.Id" style="text-decoration: none; color: inherit;">
+                <div class="author-card">
+                    <div class="author-card__icon">
+                        <img src="@Url.Content(author.AvatarUrl)" alt="@author.Name" />
+                    </div>
+                    <div class="author-card__info">
+                        <div class="author-card__name">@author.Name</div>
+                        <div class="author-card__desc">@author.Specialization</div>
+                        <div class="author-card__stats">
+                            <span><i class="ri-flashlight-line"></i> @author.TotalProducts @Localizer["Products"]</span>
+                            <span><i class="ri-download-line"></i> @Localizer["Over"] @author.TotalDownloads @Localizer["Downloads"]</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+}
+@if (Model.All.Authors.Any())
+{
+    <h3 style="margin-bottom: 16px; margin-top: 32px; color: #fff; font-size: 1.5rem; font-weight: 700;">@Localizer["AllAuthors"]</h3>
+    <div class="authors__grid">
+        @foreach (var author in Model.All.Authors)
+        {
+            <a asp-controller="Authors" asp-action="Author" asp-route-id="@author.Id" style="text-decoration: none; color: inherit;">
+                <div class="author-card">
+                    <div class="author-card__icon">
+                        <img src="@Url.Content(author.AvatarUrl)" alt="@author.Name" />
+                    </div>
+                    <div class="author-card__info">
+                        <div class="author-card__name">@author.Name</div>
+                        <div class="author-card__desc">@author.Specialization</div>
+                        <div class="author-card__stats">
+                            <span><i class="ri-flashlight-line"></i> @author.TotalProducts @Localizer["Products"]</span>
+                            <span><i class="ri-download-line"></i> @Localizer["Over"] @author.TotalDownloads @Localizer["Downloads"]</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+}
+@if (!Model.Subscribed.Authors.Any() && !Model.All.Authors.Any())
+{
+    @await Html.PartialAsync("_NoAuthorsFoundPartial")
+}

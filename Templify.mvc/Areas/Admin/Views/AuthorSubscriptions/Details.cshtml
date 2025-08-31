@@ -1,0 +1,248 @@
+@model Templify.Application.Common.DTOs.AuthorSubscriptionDto
+@{
+    ViewData["Title"] = "Детали подписки";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-bell me-2"></i>
+                        Детали подписки #@Model.Id
+                    </h4>
+                    <a asp-action="Index" class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-arrow-left me-1"></i>Назад к списку
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Информация о подписке -->
+                        <div class="col-lg-6 mb-4">
+                            <div class="info-card">
+                                <div class="info-card-header">
+                                    <i class="fas fa-bell me-2"></i>
+                                    <h5 class="mb-0">Информация о подписке</h5>
+                                </div>
+                                <div class="info-card-body">
+                                    <div class="info-item">
+                                        <span class="info-label">ID подписки:</span>
+                                        <span class="info-value badge bg-secondary">#@Model.Id</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Дата подписки:</span>
+                                        <span class="info-value">
+                                            <i class="fas fa-calendar me-1"></i>
+                                            @Model.SubscriptionDate.ToString("dd.MM.yyyy HH:mm")
+                                        </span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Статус:</span>
+                                        <span class="info-value">
+                                            @if (Model.IsActive)
+                                            {
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check-circle me-1"></i>Активна
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">
+                                                    <i class="fas fa-times-circle me-1"></i>Неактивна
+                                                </span>
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Информация о пользователе -->
+                        <div class="col-lg-6 mb-4">
+                            <div class="info-card">
+                                <div class="info-card-header">
+                                    <i class="fas fa-user me-2"></i>
+                                    <h5 class="mb-0">Информация о пользователе</h5>
+                                </div>
+                                <div class="info-card-body">
+                                    <div class="info-item">
+                                        <span class="info-label">ID пользователя:</span>
+                                        <span class="info-value badge bg-primary">#@Model.UserId</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Имя:</span>
+                                        <span class="info-value fw-bold">@Model.UserName</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Email:</span>
+                                        <span class="info-value text-primary">@Model.UserEmail</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Аватар:</span>
+                                        <span class="info-value">
+                                            @if (!string.IsNullOrEmpty(Model.UserAvatarUrl))
+                                            {
+                                                <img src="@Model.UserAvatarUrl" alt="User Avatar" class="detail-avatar">
+                                            }
+                                            else
+                                            {
+                                                <span class="detail-avatar-placeholder">
+                                                    @(Model.UserName.Length > 0 ? Model.UserName[0].ToString().ToUpper() : "U")
+                                                </span>
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Информация об авторе -->
+                        <div class="col-lg-6 mb-4">
+                            <div class="info-card">
+                                <div class="info-card-header">
+                                    <i class="fas fa-user-tie me-2"></i>
+                                    <h5 class="mb-0">Информация об авторе</h5>
+                                </div>
+                                <div class="info-card-body">
+                                    <div class="info-item">
+                                        <span class="info-label">ID автора:</span>
+                                        <span class="info-value badge bg-success">#@Model.AuthorId</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Имя:</span>
+                                        <span class="info-value fw-bold text-success">@Model.AuthorName</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Email:</span>
+                                        <span class="info-value text-info">@Model.AuthorEmail</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Аватар автора:</span>
+                                        <span class="info-value">
+                                            @if (!string.IsNullOrEmpty(Model.AuthorAvatarUrl))
+                                            {
+                                                <img src="@Model.AuthorAvatarUrl" alt="Author Avatar" class="detail-avatar">
+                                            }
+                                            else
+                                            {
+                                                <span class="detail-avatar-placeholder">
+                                                    @(Model.AuthorName.Length > 0 ? Model.AuthorName[0].ToString().ToUpper() : "A")
+                                                </span>
+                                            }
+                                        </span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Специализация:</span>
+                                        <span class="info-value">
+                                            <span class="badge bg-info">
+                                                <i class="fas fa-tag me-1"></i>@Model.AuthorSpecialization
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border-radius: 0.5rem;
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-bottom: none;
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+    
+    .info-card {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        overflow: hidden;
+    }
+    
+    .info-card-header {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        align-items: center;
+    }
+    
+    .info-card-header h5 {
+        color: #495057;
+        font-weight: 600;
+    }
+    
+    .info-card-body {
+        padding: 1.5rem;
+    }
+    
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f8f9fa;
+    }
+    
+    .info-item:last-child {
+        border-bottom: none;
+    }
+    
+    .info-label {
+        font-weight: 600;
+        color: #495057;
+        min-width: 120px;
+    }
+    
+    .info-value {
+        text-align: right;
+        color: #6c757d;
+    }
+    
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.375rem;
+    }
+    
+    .fw-bold { font-weight: 700 !important; }
+    .text-primary { color: #007bff !important; }
+    .text-success { color: #28a745 !important; }
+    .text-info { color: #17a2b8 !important; }
+    
+    .detail-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #e9ecef;
+    }
+    
+    .detail-avatar-placeholder {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 16px;
+        border: 2px solid #e9ecef;
+    }
+</style>

@@ -1,0 +1,302 @@
+@model Templify.Application.Common.DTOs.ProductPurchaseDto
+@{
+    ViewData["Title"] = "Изменить покупку";
+    Layout = "_AdminLayout";
+}
+
+<div class="edit-purchase-container">
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Изменить покупку</h1>
+            <p>Редактирование покупки продукта #@Model.Id</p>
+        </div>
+        <div class="header-actions">
+            <a asp-action="Index" class="btn btn-secondary" style="padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 6px; text-decoration: none;">
+                <i class="fas fa-arrow-left"></i> Назад к списку
+            </a>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="form-group">
+                <label asp-for="UserId" class="form-label">Пользователь</label>
+                <select asp-for="UserId" class="form-control" required>
+                    <option value="">-- Выберите пользователя --</option>
+                    @if (ViewBag.Users != null)
+                    {
+                        @foreach (var user in ViewBag.Users)
+                        {
+                            <option value="@user.Value" selected="@user.Selected">@user.Text</option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ProductId" class="form-label">Продукт</label>
+                <select asp-for="ProductId" class="form-control" required>
+                    <option value="">-- Выберите продукт --</option>
+                    @if (ViewBag.Products != null)
+                    {
+                        @foreach (var product in ViewBag.Products)
+                        {
+                            <option value="@product.Value" selected="@product.Selected">@product.Text</option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="ProductId" class="text-danger"></span>
+            </div>
+
+            <div class="purchase-info">
+                <h3>Информация о покупке</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Пользователь:</label>
+                        <span>@Model.UserName (@Model.UserEmail)</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Продукт:</label>
+                        <span>@Model.ProductName</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Автор:</label>
+                        <span>@Model.AuthorName</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Цена:</label>
+                        <span>$@Model.Price.ToString("F2")</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Сохранить изменения
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.edit-purchase-container {
+    padding: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+}
+
+.header-content h1 {
+    margin: 0 0 8px 0;
+    color: #1a1a1a;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.header-content p {
+    margin: 0;
+    color: #666;
+    font-size: 16px;
+}
+
+.form-container {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 32px;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #1a1a1a;
+    font-size: 14px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    transition: border-color 0.2s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #f093fb;
+    box-shadow: 0 0 0 3px rgba(240, 147, 251, 0.1);
+}
+
+select.form-control {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+select.form-control option {
+    padding: 8px;
+    font-size: 14px;
+}
+
+select.form-control:focus {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23f093fb' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+}
+
+.text-danger {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+
+.purchase-info {
+    margin: 32px 0;
+    padding: 24px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border-left: 4px solid #f093fb;
+}
+
+.purchase-info h3 {
+    margin: 0 0 16px 0;
+    color: #1a1a1a;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.info-item label {
+    font-weight: 600;
+    color: #666;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.info-item span {
+    color: #1a1a1a;
+    font-size: 14px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(240, 147, 251, 0.3);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+@@media (max-width: 768px) {
+    .edit-purchase-container {
+        padding: 16px;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+    
+    .form-container {
+        padding: 24px;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+}
+</style>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Форматируем дату для отображения в datetime-local input
+        document.addEventListener('DOMContentLoaded', function() {
+            var dateInput = document.querySelector('input[type="datetime-local"]');
+            if (dateInput && dateInput.value) {
+                // Если значение уже есть, убеждаемся что оно в правильном формате
+                var date = new Date(dateInput.value);
+                if (!isNaN(date.getTime())) {
+                    var year = date.getFullYear();
+                    var month = String(date.getMonth() + 1).padStart(2, '0');
+                    var day = String(date.getDate()).padStart(2, '0');
+                    var hours = String(date.getHours()).padStart(2, '0');
+                    var minutes = String(date.getMinutes()).padStart(2, '0');
+                    
+                    dateInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+                }
+            }
+        });
+    </script>
+}

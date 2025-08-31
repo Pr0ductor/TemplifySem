@@ -1,0 +1,205 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Localization
+@inject IViewLocalizer Localizer
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <title>@ViewData["Title"] - Templify</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="~/src/css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+  <div class="app-wrapper">
+    <!-- Верхнее меню -->
+    <header class="header">
+              <div class="header__logo"><a asp-controller="Home" asp-action="Index" style="display:flex;align-items:center;text-decoration:none;color:inherit;"><img src="~/src/img/logo.png" alt="Templify Logo" class="logo-img" /><span class="header__logo-text">Templify</span></a></div>
+      <button class="header__burger" aria-label="Открыть меню"><i class="ri-menu-line"></i></button>
+              <div class="header__actions">
+          @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || User.IsInRole("Manager")))
+          {
+              <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="header__admin-btn"><i class="ri-admin-line"></i> @Localizer["AdminPanel"]</a>
+          }
+          <div class="header__account-dropdown">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="Profile" asp-action="Index" class="header__account" style="text-decoration:none;color:inherit;">@Localizer["MyProfile"]</a>
+            }
+            else
+            {
+                <button class="header__account">@Localizer["Account"]</button>
+                <div class="header__account-menu">
+                  <a asp-controller="Auth" asp-action="Index" class="header__account-menu-btn" style="text-decoration:none;color:inherit;">@Localizer["SignIn"]</a>
+                  <a asp-controller="Auth" asp-action="Register" class="header__account-menu-btn" style="text-decoration:none;color:inherit;">@Localizer["SignUp"]</a>
+                </div>
+            }
+          </div>
+          <a asp-controller="SubmitYourTemplate" asp-action="Index" class="header__submit" style="text-decoration:none;color:inherit;">@Localizer["SubmitYourTemplate"]</a>
+        </div>
+    </header>
+
+    <div class="main-content">
+      <!-- Боковое меню -->
+      <aside class="sidebar">
+        <div class="sidebar__popup-header sidebar__popup-only">
+          <a asp-controller="Home" asp-action="Index" class="sidebar__logo-link">
+            <img src="~/src/img/logo.png" alt="Templify Logo" class="logo-img" />
+            <span class="sidebar__logo-text">Templify</span>
+          </a>
+        </div>
+        <div class="sidebar__popup-actions sidebar__popup-only">
+          @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || User.IsInRole("Manager")))
+          {
+              <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="sidebar__admin-btn"><i class="ri-admin-line"></i> @Localizer["AdminPanel"]</a>
+          }
+          <a asp-controller="SubmitYourTemplate" asp-action="Index" class="sidebar__submit" style="text-decoration:none;color:inherit;">@Localizer["SubmitYourTemplate"]</a>
+          
+
+
+          <div class="sidebar__account-dropdown">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="Profile" asp-action="Index" class="sidebar__account" style="text-decoration:none;color:inherit;">@Localizer["MyProfile"]</a>
+            }
+            else
+            {
+                <button class="sidebar__account">@Localizer["Account"]</button>
+                <div class="sidebar__account-menu">
+                  <a asp-controller="Auth" asp-action="Index" class="header__account-menu-btn" style="text-decoration:none;color:inherit;">@Localizer["SignIn"]</a>
+                  <a asp-controller="Auth" asp-action="Register" class="header__account-menu-btn" style="text-decoration:none;color:inherit;">@Localizer["SignUp"]</a>
+                </div>
+            }
+          </div>
+        </div>
+        <nav class="sidebar__nav">
+          <ul>
+            <li class="@(ViewData["ActiveTab"]?.ToString() == "home" ? "active" : "")"><a asp-controller="Home" asp-action="Index"><i class="ri-home-5-line"></i> @Localizer["Home"]</a></li>
+            <li class="@(ViewData["ActiveTab"]?.ToString() == "products" ? "active" : "")"><a asp-controller="Products" asp-action="Index"><i class="ri-compass-3-line"></i> @Localizer["ExploreTemplates"]</a></li>
+            <li class="@(ViewData["ActiveTab"]?.ToString() == "categories" ? "active" : "")"><a asp-controller="Categories" asp-action="Index"><i class="ri-grid-line"></i> @Localizer["AllCategories"]</a></li>
+            <li class="@(ViewData["ActiveTab"]?.ToString() == "authors" ? "active" : "")"><a asp-controller="Authors" asp-action="Index"><i class="ri-user-3-line"></i> @Localizer["Authors"]</a></li>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <li class="@(ViewData["ActiveTab"]?.ToString() == "profile" ? "active" : "")"><a asp-controller="Profile" asp-action="Index"><i class="ri-user-settings-line"></i> @Localizer["MyProfile"]</a></li>
+                <li class="@(ViewData["ActiveTab"]?.ToString() == "settings" ? "active" : "")"><a asp-controller="Settings" asp-action="Index"><i class="ri-settings-3-line"></i> @Localizer["Settings"]</a></li>
+            }
+            @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || User.IsInRole("Manager")))
+            {
+                <hr class="divider">
+                <li class="@(ViewData["ActiveTab"]?.ToString() == "admin" ? "active" : "")"><a asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><i class="ri-admin-line"></i> @Localizer["AdminPanel"]</a></li>
+            }
+            <hr class="divider">
+            <!-- Language Switcher -->
+            <li class="sidebar__language-switcher-item">
+              <div class="language-switcher-header">
+                <i class="ri-translate-2"></i>
+                <span>@Localizer["Language"]</span>
+              </div>
+              <form asp-controller="Language" asp-action="SetLanguage" method="post" class="language-switcher-form">
+                <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                <button type="submit" name="culture" value="en-US" class="lang-switch-btn @(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en") ? "active" : "")" title="English">
+                  🇺🇸
+                </button>
+                <button type="submit" name="culture" value="ru-RU" class="lang-switch-btn @(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ru") ? "active" : "")" title="Русский">
+                  🇷🇺
+                </button>
+              </form>
+            </li>
+            <li class="@(ViewData["ActiveTab"]?.ToString() == "contact" ? "active" : "")"><a asp-controller="Contact" asp-action="Index"><i class="ri-customer-service-2-line"></i> @Localizer["CustomerSupport"]</a></li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- Основной контент -->
+      <main class="content">
+        @RenderBody()
+      </main>
+</div>
+<div class="overlay"></div>
+
+    <!-- Футер -->
+    <footer class="footer">
+      <div class="footer__logo">
+        <img src="~/src/img/logo.png" alt="Templify Logo" class="logo-img" />
+        Templify
+      </div>
+      <div class="footer__links">
+        <a href="#">@Localizer["TermsConditions"]</a>
+        <a href="#">@Localizer["Legal"]</a>
+        <span>@Localizer["AllRightReserved"]</span>
+      </div>
+    </footer>
+  </div>
+  <script src="~/src/js/script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+  <script>
+    (function() {
+      if (!document.body) return;
+      const hubUrl = `${window.location.origin}/hubs/notifications`;
+      const connection = new signalR.HubConnectionBuilder()
+        .withUrl(hubUrl)
+        .withAutomaticReconnect()
+        .build();
+
+      connection.on('AuthorPublishedProduct', function (payload) {
+        try {
+          const { authorId, authorName, productId, productName } = payload || {};
+                              const message = `${authorName} @Localizer["publishedanewproduct"]: ${productName}`;
+
+          // Контейнер для уведомлений (правый верхний угол)
+          let container = document.getElementById('toast-container-top-right');
+          if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container-top-right';
+            container.style.position = 'fixed';
+            container.style.top = '16px';
+            container.style.right = '16px';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.gap = '10px';
+            container.style.zIndex = 9999;
+            document.body.appendChild(container);
+          }
+
+          // Элемент уведомления
+          const toast = document.createElement('div');
+          toast.style.background = '#111827';
+          toast.style.color = '#fff';
+          toast.style.padding = '12px 16px';
+          toast.style.borderRadius = '10px';
+          toast.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+          toast.style.cursor = 'pointer';
+          toast.style.minWidth = '260px';
+          toast.style.maxWidth = '360px';
+          toast.style.fontSize = '14px';
+          toast.style.lineHeight = '1.4';
+                    toast.innerHTML = `<strong style="display:block;margin-bottom:4px;">@Localizer["Newpublication"]</strong><span>${message}</span>`;
+          toast.onclick = function() {
+            window.location.href = `/Products/Details/${productId}`;
+          };
+
+          container.appendChild(toast);
+          setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity .3s ease';
+            setTimeout(() => toast.remove(), 300);
+          }, 6000);
+        } catch(e) { console.error(e); }
+      });
+
+      function start() {
+        connection.start().catch(function (err) {
+          console.error('SignalR connect error', err);
+          setTimeout(start, 3000);
+        });
+      }
+      start();
+    })();
+  </script>
+  @RenderSection("Scripts", required: false)
+</body>
+</html>
+

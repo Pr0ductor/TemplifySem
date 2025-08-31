@@ -1,0 +1,150 @@
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@model Templify.mvc.Models.AuthorViewModel
+@{ ViewData["Title"] = Model.AuthorWithProducts.Author.Name; }
+
+<div style="max-width: 1200px; margin: 0 auto;">
+    <!-- Главный единый блок автора -->
+    <div style="background: #181a1b; border-radius: 24px; padding: 40px; margin-bottom: 48px; border: 2px solid #23272a;">
+        <div style="display: grid; grid-template-columns: auto 1fr auto; gap: 40px; align-items: center; margin-bottom: 32px;">
+            <!-- Left - Logo -->
+            <div style="width: 120px; height: 120px; border-radius: 20px; overflow: hidden; background: #232526;">
+                <img src="@Url.Content(Model.AuthorWithProducts.Author.AvatarUrl)" alt="@Model.AuthorWithProducts.Author.Name" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <!-- Center - Info -->
+            <div>
+                <h1 style="color: #fff; font-size: 2.5rem; font-weight: 800; margin: 0 0 8px 0;">@Model.AuthorWithProducts.Author.Name</h1>
+                <p style="color: #ccc; font-size: 1.2rem; margin: 0 0 8px 0;">@Model.AuthorWithProducts.Author.Specialization</p>
+                <p style="color: #00ff88; font-size: 1rem; margin: 0 0 24px 0;">
+                    <i class="ri-mail-line" style="margin-right: 8px;"></i>@Model.AuthorWithProducts.Author.Email
+                </p>
+                <div style="display: flex; align-items: center; gap: 32px; margin-bottom: 16px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i class="ri-flashlight-line" style="color: #00ff88; font-size: 1.1rem;"></i>
+                        <span style="color: #fff; font-weight: 600;">@Model.AuthorWithProducts.Products.Count+ @Localizer["Products"]</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i class="ri-download-line" style="color: #00ff88; font-size: 1.1rem;"></i>
+                        <span style="color: #fff; font-weight: 600;">@Localizer["Over"] @Model.AuthorWithProducts.Author.TotalDownloads+ @Localizer["Downloads"]</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Right - Button -->
+            <div style="text-align: center;">
+                <button id="subscribe-btn" data-author-id="@Model.AuthorWithProducts.Author.Id" style="background: linear-gradient(90deg,#00ff88 0%,#00e0ff 100%); color: #111; border: none; border-radius: 12px; padding: 12px 24px; font-weight: 700; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 200px;">
+                    @Localizer["Subscribe"]
+                </button>
+                <div id="current-user-status" style="display: none; background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 12px; padding: 20px; text-align: center; width: 200px;">
+                    <div style="color: #ffc107; font-size: 2rem; margin-bottom: 12px;"><i class="ri-user-star-line"></i></div>
+                    <h4 style="color: #ffc107; margin: 0 0 8px 0; font-size: 1.1rem;">@Localizer["Thisisyou"]</h4>
+                    <p style="color: #ccc; margin: 0; font-size: 0.9rem;">@Localizer["Youcannotsubscribetoyourself"]</p>
+                </div>
+            </div>
+        </div>
+        <hr style="border: none; border-top: 1px solid #23272a; margin: 32px 0;">
+        <div>
+            <h3 style="color: #fff; font-size: 1.8rem; font-weight: 700; margin-bottom: 16px;">@Localizer["About"] @Model.AuthorWithProducts.Author.Name:</h3>
+            <p style="color: #ccc; line-height: 1.7; font-size: 1.1rem; margin-bottom: 24px;">
+                @Model.AuthorWithProducts.Author.Bio
+            </p>
+            <h3 style="color: #fff; font-size: 1.8rem; font-weight: 700; margin-bottom: 16px;">@Localizer["ContactInformation"]:</h3>
+            <p style="color: #ccc; line-height: 1.7; font-size: 1.1rem; margin-bottom: 24px;">
+                <strong>@Localizer["Email"]:</strong> <a href="mailto:@Model.AuthorWithProducts.Author.Email" style="color: #00ff88; text-decoration: none;">@Model.AuthorWithProducts.Author.Email</a>
+            </p>
+        </div>
+    </div>
+    <!-- Продукты автора -->
+    <div style="background: #181a1b; border-radius: 24px; padding: 40px; margin-top: 32px; border: 2px solid #23272a;">
+        <h2 style="color: #fff; font-size: 2rem; font-weight: 700; margin-bottom: 32px;">@Localizer["Productsfrom"] @Model.AuthorWithProducts.Author.Name:</h2>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+            @foreach (var product in Model.AuthorWithProducts.Products)
+            {
+                <a asp-controller="Products" asp-action="Product" asp-route-id="@product.Id" style="text-decoration: none; color: inherit;">
+                    <div style="background: #232526; border-radius: 16px; overflow: hidden; border: 2px solid #23272a; cursor: pointer; transition: transform 0.2s;">
+                        <div style="position: relative;">
+                            <img src="@Url.Content(product.ImageUrl)" alt="@product.Name" style="width: 100%; height: 200px; object-fit: cover;">
+                            <div style="position: absolute; top: 16px; right: 16px; background: #00ff88; color: #111; padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 0.9rem;">$@product.Price</div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <h4 style="color: #fff; font-size: 1.1rem; font-weight: 600; margin: 0;">@product.Name</h4>
+                            <div style="color: #ccc; font-size: 0.9rem; margin-top: 8px;">@product.Category</div>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const btn = document.getElementById('subscribe-btn');
+        const currentUserStatus = document.getElementById('current-user-status');
+        if (!btn) return;
+        
+        const authorId = btn.getAttribute('data-author-id');
+        let subscribed = false;
+        let isCurrentUser = false;
+        
+        // Проверка, является ли текущий пользователь автором
+        fetch(`/Authors/IsCurrentUserAuthor?authorId=${authorId}`)
+            .then(r => r.json())
+            .then(data => {
+                if (data.success && data.isCurrentUser) {
+                    isCurrentUser = true;
+                    showCurrentUserStatus();
+                    return; // Не проверяем подписку если это текущий пользователь
+                }
+                
+                // Проверка статуса подписки только если это не текущий пользователь
+                return fetch(`/Authors/IsSubscribed?authorId=${authorId}`);
+            })
+            .then(response => {
+                if (response && !isCurrentUser) {
+                    return response.json();
+                }
+                return null;
+            })
+            .then(data => {
+                if (data && !isCurrentUser) {
+                    subscribed = data.subscribed;
+                    updateBtn();
+                }
+            });
+            
+        function showCurrentUserStatus() {
+            btn.style.display = 'none';
+            currentUserStatus.style.display = 'block';
+        }
+        
+        function updateBtn() {
+            if (subscribed) {
+                btn.textContent = '@Localizer["Unsubscribe"]';
+                btn.style.background = 'linear-gradient(90deg,#ff4e4e 0%,#ffb300 100%)';
+            } else {
+                btn.textContent = '@Localizer["Subscribe"]';
+                btn.style.background = 'linear-gradient(90deg,#00ff88 0%,#00e0ff 100%)';
+            }
+        }
+        
+        btn.addEventListener('click', function() {
+            if (isCurrentUser) return; // Не обрабатываем клик если это текущий пользователь
+            
+            btn.disabled = true;
+            const url = subscribed ? '/Authors/Unsubscribe' : '/Authors/Subscribe';
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `authorId=${authorId}`
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    subscribed = !subscribed;
+                    updateBtn();
+                }
+            })
+            .finally(() => btn.disabled = false);
+        });
+    });
+</script>
+
+         

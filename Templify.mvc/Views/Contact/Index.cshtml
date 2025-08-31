@@ -1,0 +1,64 @@
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@model Templify.mvc.Models.ContactModel
+@{ ViewData["Title"] = @Localizer["Contact"]; }
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div style="background: linear-gradient(135deg, #00ff88 0%, #00e0ff 100%); color: #111; padding: 12px 16px; border-radius: 10px; font-weight: 600; margin-bottom: 16px;">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<section class="contact-section-row">
+          <div class="contact-info">
+            <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 0; margin-top: 0;">@Localizer["GetInTouchWithOur"]<br><span style='color:#00ff88'>@Localizer["ExpertMember"]!</span></h1>
+        <p style="font-size: 1.1rem; color: #ccc; margin-bottom: 18px; margin-top: 18px; max-width: 520px;">@Localizer["Wetakepride"]</p>
+            <div style="height: 6px; width: 60%; background: linear-gradient(90deg, #00ff88 60%, transparent 100%); border-radius: 4px; margin-bottom: 147px;"></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+              <div>
+                <div style="font-weight: 600; margin-bottom: 4px;">@Localizer["OurAddress"]</div>
+                <div style="color: #ccc; font-size: 1rem; margin-bottom: 18px;">@Localizer["Address"]</div>
+                <div style="font-weight: 600; margin-bottom: 4px;">@Localizer["CustomerSupport"]</div>
+                <div style="color: #ccc; font-size: 1rem;">@Localizer["Mail"]</div>
+              </div>
+              <div>
+                <div style="font-weight: 600; margin-bottom: 4px;">@Localizer["GeneralInquiries"]</div>
+                <div style="color: #ccc; font-size: 1rem; margin-bottom: 18px;">+(907) 822-3177, +(907) 262-2578</div>
+                <div style="font-weight: 600; margin-bottom: 4px;">@Localizer["BusinessHours"]</div>
+                <div style="color: #ccc; font-size: 1rem;">Mon to Fri: 9:00 AM - 6:00 PM -<br>Sat to Sun: Closed</div>
+              </div>
+            </div>
+          </div>
+          <div class="contact-form-wrapper">
+            <form class="auth-form" asp-action="Index" method="post" style="display: flex; flex-direction: column; gap: 18px;">
+              @Html.AntiForgeryToken()
+              <label style="font-weight: 600;">@Localizer["FullName"]
+                <input asp-for="FullName" type="text" placeholder="@Localizer["FullName"]" style="margin-top: 6px; width: 100%; padding: 12px; border-radius: 8px; border: none; background: #333333; color: #fff; font-size: 1rem;" class="input-white-ph">
+                <span asp-validation-for="FullName" class="text-danger"></span>
+              </label>
+              <label style="font-weight: 600;">@Localizer["EmailAddress"]
+                <input asp-for="Email" type="email" placeholder="@Localizer["TypeYourEmailAddress"]" style="margin-top: 6px; width: 100%; padding: 12px; border-radius: 8px; border: none; background: #333333; color: #fff; font-size: 1rem;" class="input-white-ph">
+                <span asp-validation-for="Email" class="text-danger"></span>
+              </label>
+              <label style="font-weight: 600;">@Localizer["WriteYourMessage"]
+                <textarea asp-for="Message" placeholder="@Localizer["TypeYourMessage"]" style="margin-top: 6px; width: 100%; padding: 12px; border-radius: 8px; border: none; background: #333333; color: #fff; font-size: 1rem; min-height: 120px; resize: vertical; width: 100%;" class="input-white-ph"></textarea>
+                <span asp-validation-for="Message" class="text-danger"></span>
+              </label>
+              <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+              <button type="submit" style="background: linear-gradient(90deg, #00ff88 60%, #00c97b 100%); color: #111; font-weight: 700; border: none; border-radius: 8px; padding: 14px 0; font-size: 1.1rem; margin-top: 8px; width: 100%;">@Localizer["SubmitRequest"]</button>
+            </form>
+            <style>
+              .input-white-ph::placeholder {
+                color: #fff !important;
+                opacity: 1;
+              }
+              .input-white-ph::-webkit-input-placeholder { color: #fff !important; }
+              .input-white-ph:-ms-input-placeholder { color: #fff !important; }
+              .input-white-ph::-ms-input-placeholder { color: #fff !important; }
+            </style>
+          </div>
+        </section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

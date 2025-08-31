@@ -1,0 +1,297 @@
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@model (Templify.mvc.Models.AuthorsListViewModel Subscribed, Templify.mvc.Models.AuthorsListViewModel All)
+@{ ViewData["Title"] = @Localizer["Authors"]; }
+
+<div class="section-header" style="margin-bottom: 32px;">
+    <h2>@Localizer["OurTopAuthors"]</h2>
+</div>
+
+<div class="search-section" style="margin-bottom: 32px; display: flex; justify-content: center;">
+    <div class="search-container" style="position: relative; width: 90%; max-width: 700px; min-width: 320px;">
+        <div class="search-bar-wrapper" style="position: relative; width: 100%; background: linear-gradient(135deg, #1a1d1e 0%, #23272a 100%); border-radius: 24px; padding: 6px; box-shadow: 0 8px 32px rgba(0,255,136,0.12), 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.08); border: 2px solid rgba(0,255,136,0.15); display: flex; align-items: center; gap: 12px; transition: all 0.3s ease;">
+            <div class="search-icon" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #00ff88; font-size: 1.4rem; opacity: 0.9; transition: all 0.3s ease;">
+                <i class="ri-search-line"></i>
+            </div>
+            <input id="author-search" type="text" placeholder="@Localizer["Searchforauthorsbynamespecialization"]" style="flex: 1; padding: 18px 60px 18px 50px; border-radius: 18px; border: none; font-size: 1.1rem; background: transparent; color: #fff; outline: none; font-weight: 500; letter-spacing: 0.02em; transition: all 0.3s ease;" />
+            <div id="search-spinner" class="search-spinner" style="display:none; position: absolute; right: 60px; top: 50%; transform: translateY(-50%);">
+                <div class="spinner-ring"></div>
+            </div>
+            <div class="search-clear" id="search-clear" style="display:none; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); cursor:pointer; color:#aaa; font-size: 1.4rem; transition: all 0.3s ease; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+                <i class="ri-close-line"></i>
+            </div>
+        </div>
+        <div class="search-stats" id="search-stats" style="margin-top: 16px; text-align: center; color: #888; font-size: 0.9rem; opacity: 0; transition: opacity 0.3s ease;">
+            <span id="results-count"></span>
+        </div>
+    </div>
+</div>
+
+<div id="authors-blocks">
+    @await Html.PartialAsync("_AuthorsBlocksPartial", Model)
+</div>
+
+<style>
+    .search-container { 
+        position: relative; 
+        width: 90%; 
+        max-width: 700px; 
+        min-width: 320px; 
+    }
+    
+    .search-bar-wrapper { 
+        position: relative; 
+        width: 100%; 
+        background: linear-gradient(135deg, #1a1d1e 0%, #23272a 100%); 
+        border-radius: 24px; 
+        padding: 6px; 
+        box-shadow: 0 8px 32px rgba(0,255,136,0.12), 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.08); 
+        border: 2px solid rgba(0,255,136,0.15); 
+        display: flex; 
+        align-items: center; 
+        gap: 12px; 
+        transition: all 0.3s ease;
+    }
+    
+    .search-bar-wrapper:focus-within {
+        border-color: rgba(0,255,136,0.4);
+        box-shadow: 0 12px 40px rgba(0,255,136,0.2), 0 6px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+        transform: translateY(-2px);
+    }
+    
+    .search-bar-wrapper input { 
+        background: transparent; 
+        color: #fff; 
+        transition: all 0.3s ease;
+    }
+    
+    .search-bar-wrapper input::placeholder {
+        color: #666;
+        transition: color 0.3s ease;
+    }
+    
+    .search-bar-wrapper input:focus::placeholder {
+        color: #888;
+    }
+    
+    .search-icon { 
+        position: absolute; 
+        left: 20px; 
+        top: 50%; 
+        transform: translateY(-50%); 
+        color: #00ff88; 
+        font-size: 1.4rem; 
+        opacity: 0.9; 
+        transition: all 0.3s ease;
+    }
+    
+    .search-clear { 
+        position: absolute; 
+        right: 20px; 
+        top: 50%; 
+        transform: translateY(-50%); 
+        cursor: pointer; 
+        color: #aaa; 
+        font-size: 1.4rem; 
+        transition: all 0.3s ease; 
+        width: 32px; 
+        height: 32px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        border-radius: 50%;
+    }
+    
+    .search-clear:hover { 
+        color: #00ff88; 
+        background: rgba(0,255,136,0.1);
+        transform: translateY(-50%) scale(1.1);
+    }
+    
+    .spinner-ring { 
+        width: 24px; 
+        height: 24px; 
+        border: 3px solid rgba(0,255,136,0.3); 
+        border-top: 3px solid #00ff88; 
+        border-radius: 50%; 
+        animation: spin 0.8s linear infinite; 
+    }
+    
+    @@keyframes spin { 
+        100% { transform: rotate(360deg); } 
+    }
+    
+    .search-stats {
+        margin-top: 16px;
+        text-align: center;
+        color: #888;
+        font-size: 0.9rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .search-stats.show {
+        opacity: 1;
+    }
+    
+    .search-stats .highlight {
+        color: #00ff88;
+        font-weight: 600;
+    }
+
+    /* Мобильные правки: фикс центрирования иконки и элементов в поиске */
+    @@media (max-width: 900px) {
+        .search-section { padding: 0 12px; }
+        .search-container { width: 100%; max-width: none; min-width: 0 !important; }
+        .search-bar-wrapper { padding: 6px 6px; border-radius: 18px; }
+        .search-bar-wrapper input {
+            height: 48px;
+            line-height: 48px;
+            padding: 12px 56px 12px 52px; /* справа под крестик/спиннер, слева под иконку */
+        }
+        .search-icon,
+        .search-clear,
+        #search-spinner {
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+        }
+    }
+
+    /* Очень узкие экраны до 480px */
+    @@media (max-width: 480px) {
+        .search-bar-wrapper { border-radius: 14px; }
+        .search-bar-wrapper input {
+            font-size: 0.95rem;
+            padding: 10px 48px 10px 44px;
+            height: 42px;
+            line-height: 42px;
+        }
+        .search-icon { left: 14px; font-size: 1.2rem; }
+        .search-clear { right: 14px; }
+        #search-spinner { right: 46px; }
+        .search-stats { font-size: 0.8rem; }
+    }
+
+    /* Экстремально узкие экраны до 320px/300px */
+    @@media (max-width: 320px) {
+        .search-section { padding: 0 8px; }
+        .search-bar-wrapper input {
+            font-size: 0.9rem;
+            padding-left: 40px;
+            padding-right: 42px;
+        }
+        .search-icon { left: 10px; }
+        .search-clear { right: 10px; }
+        #search-spinner { right: 40px; }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('author-search');
+        const authorsBlocks = document.getElementById('authors-blocks');
+        const spinner = document.getElementById('search-spinner');
+        const clearBtn = document.getElementById('search-clear');
+        const searchStats = document.getElementById('search-stats');
+        const resultsCount = document.getElementById('results-count');
+        let timer = null;
+        let currentSearch = '';
+
+        // Инициализация из query string
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('search')) {
+            const searchValue = urlParams.get('search');
+            searchInput.value = searchValue;
+            currentSearch = searchValue;
+            if (searchValue) {
+                clearBtn.style.display = 'flex';
+                performSearch(searchValue);
+            }
+        }
+
+        function updateQueryString(val) {
+            const params = new URLSearchParams(window.location.search);
+            if (val) {
+                params.set('search', val);
+            } else {
+                params.delete('search');
+            }
+            const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+            window.history.replaceState({}, '', newUrl);
+        }
+
+        function updateSearchStats(count, total) {
+            if (currentSearch) {
+                resultsCount.innerHTML = `@Localizer["Found"] <span class="highlight">${count}</span> @Localizer["authorsmatching"] "<span class="highlight">${currentSearch}</span>"`;
+                searchStats.classList.add('show');
+            } else {
+                searchStats.classList.remove('show');
+            }
+        }
+
+        function performSearch(val) {
+            if (val === currentSearch) return;
+            
+            currentSearch = val;
+            spinner.style.display = 'block';
+            
+            fetch(`/Authors/SearchAuthors?search=${encodeURIComponent(val)}`)
+                .then(r => r.text())
+                .then(html => {
+                    authorsBlocks.innerHTML = html;
+                    
+                    // Подсчитываем количество найденных авторов
+                    const authorCards = authorsBlocks.querySelectorAll('.author-card');
+                    updateSearchStats(authorCards.length, authorCards.length);
+                })
+                .catch(error => {
+                    console.error('Search error:', error);
+                    resultsCount.innerHTML = 'Error occurred during search';
+                    searchStats.classList.add('show');
+                })
+                .finally(() => {
+                    spinner.style.display = 'none';
+                });
+        }
+
+        function doSearch(val) {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                updateQueryString(val);
+                performSearch(val);
+            }, 400);
+        }
+
+        searchInput.addEventListener('input', function() {
+            const val = searchInput.value;
+            clearBtn.style.display = val ? 'flex' : 'none';
+            doSearch(val);
+        });
+
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                clearTimeout(timer);
+                updateQueryString(searchInput.value);
+                performSearch(searchInput.value);
+            }
+        });
+
+        clearBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            currentSearch = '';
+            clearBtn.style.display = 'none';
+            updateQueryString('');
+            performSearch('');
+            searchInput.focus();
+        });
+
+        // Анимация при фокусе
+        searchInput.addEventListener('focus', function() {
+            searchInput.parentElement.style.transform = 'translateY(-2px)';
+        });
+
+        searchInput.addEventListener('blur', function() {
+            searchInput.parentElement.style.transform = 'translateY(0)';
+        });
+    });
+</script>

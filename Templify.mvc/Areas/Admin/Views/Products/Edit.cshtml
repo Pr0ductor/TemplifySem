@@ -1,0 +1,433 @@
+@model Templify.Application.Features.Products.Commands.UpdateProductCommand
+@{
+    ViewData["Title"] = "Редактировать продукт";
+}
+
+<div class="edit-product-container">
+    <h2>Редактировать продукт</h2>
+    
+    <!-- Отображение ошибок валидации -->
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <h4>Ошибки валидации:</h4>
+            <div asp-validation-summary="All" class="text-danger"></div>
+        </div>
+    }
+    
+
+    
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="UserId" />
+        <div class="form-group">
+            <label asp-for="Name">Название</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description">Описание</label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Category">Категория</label>
+            <select asp-for="Category" class="form-control">
+                <option value="">Выберите категорию</option>
+                <option value="business">Business</option>
+                <option value="3d web">3D Web</option>
+                <option value="saas platforms">Saas Platforms</option>
+                <option value="agency">Agency</option>
+                <option value="portfolio design">Portfolio Design</option>
+                <option value="ecommerce">Ecommerce</option>
+                <option value="education">Education</option>
+                <option value="health">Health</option>
+                <option value="marketing">Marketing</option>
+                <option value="restaurant & food">Restaurant & Food</option>
+                <option value="gaming & entertainment">Gaming & Entertainment</option>
+                <option value="real estate">Real Estate</option>
+            </select>
+            <span asp-validation-for="Category" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Price">Цена</label>
+            <input asp-for="Price" class="form-control" type="number" min="0" step="0.01" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="AuthorId">Автор</label>
+            <select asp-for="AuthorId" class="form-control" asp-items="ViewBag.Authors">
+                <option value="">Выберите автора</option>
+            </select>
+            <span asp-validation-for="AuthorId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label>Текущее изображение</label>
+            <div class="current-image-preview">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" alt="Product Image" class="current-image" />
+                    <p class="current-image-info">Текущее изображение продукта</p>
+                }
+                else
+                {
+                    <div class="no-image-placeholder">
+                        <i class="fas fa-image"></i>
+                        <p>Изображение не загружено</p>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="newImage">Новое изображение</label>
+            <input type="file" name="newImage" id="newImage" class="form-control" accept="image/*" />
+            <div id="imagePreview" class="image-preview" style="display: none;">
+                <img id="previewImg" src="" alt="Preview" />
+                <p class="current-image-info">Предварительный просмотр нового изображения</p>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+
+<style>
+.products-container {
+    padding: 24px;
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-content h1 {
+    margin: 0 0 8px 0;
+    color: #1a1a1a;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.header-content p {
+    margin: 0;
+    color: #666;
+    font-size: 16px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-secondary {
+    background: #f8f9fa;
+    color: #666;
+    border: 1px solid #e0e0e0;
+}
+
+.btn-secondary:hover {
+    background: #e9ecef;
+    color: #666;
+    text-decoration: none;
+}
+
+.content-section {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    padding: 32px;
+}
+
+.product-form {
+    max-width: 800px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #1a1a1a;
+    font-size: 14px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 14px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-control::placeholder {
+    color: #999;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.validation-error {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+
+.form-help {
+    color: #666;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+
+.current-image-preview {
+    border: 2px dashed #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    background: #f8f9fa;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.current-image {
+    max-width: 100%;
+    max-height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-bottom: 8px;
+}
+
+.current-image-info {
+    margin: 0;
+    color: #666;
+    font-size: 12px;
+}
+
+.no-image-placeholder {
+    color: #999;
+    font-size: 14px;
+}
+
+.no-image-placeholder i {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.image-preview {
+    margin-top: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 8px;
+    text-align: center;
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 100px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.form-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: flex-start;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.alert {
+    padding: 16px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+@@media (max-width: 768px) {
+    .products-container {
+        padding: 16px;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+    
+    .header-actions {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .content-section {
+        padding: 24px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .btn {
+        justify-content: center;
+    }
+}
+</style>
+
+<script>
+// Предпросмотр изображения
+document.getElementById('newImage').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+    } else {
+        preview.style.display = 'none';
+    }
+});
+
+// Автоматический выбор категории и автора при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    // Выбор категории
+    const categorySelect = document.querySelector('select[asp-for="Category"]');
+    const currentCategory = '@Model.Category';
+    
+    if (categorySelect && currentCategory) {
+        categorySelect.value = currentCategory;
+    }
+    
+    // Выбор автора
+    const authorSelect = document.querySelector('select[asp-for="AuthorId"]');
+    const currentAuthorId = '@Model.AuthorId';
+    
+    if (authorSelect && currentAuthorId) {
+        authorSelect.value = currentAuthorId;
+    }
+    
+    // Валидация формы
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        // Проверяем обязательные поля
+        const name = document.querySelector('input[asp-for="Name"]').value.trim();
+        const description = document.querySelector('textarea[asp-for="Description"]').value.trim();
+        const category = document.querySelector('select[asp-for="Category"]').value;
+        const price = document.querySelector('input[asp-for="Price"]').value;
+        const authorId = document.querySelector('select[asp-for="AuthorId"]').value;
+        
+        // Проверяем валидность
+        if (!name) {
+            alert('Название обязательно для заполнения');
+            e.preventDefault();
+            return false;
+        }
+        
+        if (!description) {
+            alert('Описание обязательно для заполнения');
+            e.preventDefault();
+            return false;
+        }
+        
+        if (!category) {
+            alert('Выберите категорию');
+            e.preventDefault();
+            return false;
+        }
+        
+        if (!price || price <= 0) {
+            alert('Цена должна быть больше 0');
+            e.preventDefault();
+            return false;
+        }
+        
+        if (!authorId) {
+            alert('Выберите автора');
+            e.preventDefault();
+            return false;
+        }
+    });
+});
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

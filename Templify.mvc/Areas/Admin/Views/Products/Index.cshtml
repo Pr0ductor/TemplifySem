@@ -1,0 +1,589 @@
+@model List<Templify.Application.Common.DTOs.ProductDto>
+@{
+    ViewData["Title"] = "Управление продуктами";
+}
+
+<!-- Отладочная информация о Model (можно удалить, если не нужна) -->
+<!--
+<div style="background: #e3f2fd; padding: 20px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #2196f3;">
+    <h4 style="color: #1976d2; margin-top: 0;">Отладка Model:</h4>
+    <div style="font-family: monospace; font-size: 12px;">
+        <div><strong>Model is null:</strong> @(Model == null)</div>
+        <div><strong>Model count:</strong> @(Model?.Count ?? 0)</div>
+        @if (Model != null && Model.Any())
+        {
+            <div><strong>First product ID:</strong> @Model.First().Id</div>
+            <div><strong>First product Name:</strong> @Model.First().Name</div>
+            <div><strong>First product ImageUrl:</strong> "@Model.First().ImageUrl"</div>
+            <div><strong>First product AuthorAvatarUrl:</strong> "@Model.First().AuthorAvatarUrl"</div>
+            <div><strong>First product ImageUrl starts with /:</strong> @(Model.First().ImageUrl?.StartsWith("/") ?? false)</div>
+            <div><strong>First product AuthorAvatarUrl starts with /:</strong> @(Model.First().AuthorAvatarUrl?.StartsWith("/") ?? false)</div>
+        }
+    </div>
+</div>
+-->
+
+<div class="products-container">
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Управление продуктами</h1>
+            <p>Создавайте, редактируйте и управляйте продуктами на платформе</p>
+        </div>
+        <div class="header-actions">
+            <a asp-action="Create" class="btn-primary">
+                <i class="fas fa-plus"></i>
+                Добавить продукт
+            </a>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <div class="filters-section">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Поиск по названию, описанию или автору..." value="@ViewBag.SearchTerm">
+            </div>
+            <div class="filters">
+                <select id="categoryFilter" class="filter-select">
+                    <option value="">Все категории</option>
+                    <option value="business" selected="@(ViewBag.CategoryFilter == "business")">Business</option>
+                    <option value="3d web" selected="@(ViewBag.CategoryFilter == "3d web")">3D Web</option>
+                    <option value="saas platforms" selected="@(ViewBag.CategoryFilter == "saas platforms")">Saas Platforms</option>
+                    <option value="agency" selected="@(ViewBag.CategoryFilter == "agency")">Agency</option>
+                    <option value="portfolio design" selected="@(ViewBag.CategoryFilter == "portfolio design")">Portfolio Design</option>
+                    <option value="ecommerce" selected="@(ViewBag.CategoryFilter == "ecommerce")">Ecommerce</option>
+                    <option value="education" selected="@(ViewBag.CategoryFilter == "education")">Education</option>
+                    <option value="health" selected="@(ViewBag.CategoryFilter == "health")">Health</option>
+                    <option value="marketing" selected="@(ViewBag.CategoryFilter == "marketing")">Marketing</option>
+                    <option value="restaurant & food" selected="@(ViewBag.CategoryFilter == "restaurant & food")">Restaurant & Food</option>
+                    <option value="gaming & entertainment" selected="@(ViewBag.CategoryFilter == "gaming & entertainment")">Gaming & Entertainment</option>
+                    <option value="real estate" selected="@(ViewBag.CategoryFilter == "real estate")">Real Estate</option>
+                </select>
+                <button id="clearFilters" class="btn-secondary" style="padding: 8px 16px; font-size: 12px;">
+                    <i class="fas fa-times"></i> Сбросить
+                </button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Изображение</th>
+                        <th>Название</th>
+                        <th>Автор</th>
+                        <th>Категория</th>
+                        <th>Цена</th>
+                        <th>Скачивания</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var product in Model)
+                        {
+                            <tr>
+                                <td>#@product.Id</td>
+                                <td>
+                                    <div class="product-image">
+                                        @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                        {
+                                            <img src="@product.ImageUrl" alt="Product" class="product-thumbnail">
+                                        }
+                                        else
+                                        {
+                                            <div class="product-thumbnail-placeholder">
+                                                <i class="fas fa-image"></i>
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="product-info">
+                                        <div class="product-name">@product.Name</div>
+                                        <div class="product-description">
+                                            @(product.Description.Length > 50 ? product.Description.Substring(0, 50) + "..." : product.Description)
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="author-info">
+                                        @if (!string.IsNullOrEmpty(product.AuthorAvatarUrl))
+                                        {
+                                            <img src="@product.AuthorAvatarUrl" alt="Author" class="author-avatar">
+                                        }
+                                        else
+                                        {
+                                            <div class="author-avatar-placeholder">
+                                                @(product.Author.Length > 0 ? product.Author[0].ToString().ToUpper() : "?")
+                                            </div>
+                                        }
+                                        <span class="author-name">@product.Author</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    @{
+                                        var categoryClass = product.Category.ToLower().Replace(" ", "").Replace("&", "and");
+                                    }
+                                    <span class="badge badge-category badge-@categoryClass" data-category="@product.Category.ToLower()">
+                                        @product.Category
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (product.Price == 0)
+                                    {
+                                        <span class="price-free">Бесплатно</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="price-paid">$@product.Price</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="downloads-count">
+                                        <i class="fas fa-download"></i>
+                                        @product.Downloads
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a asp-action="Edit" asp-route-id="@product.Id" class="btn-icon btn-edit" title="Редактировать">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form asp-action="Delete" asp-route-id="@product.Id" method="post" style="display:inline" onsubmit="return confirm('Удалить продукт?');">
+                                            <button type="submit" class="btn-icon btn-delete" title="Удалить">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="no-data">
+                                <div class="no-data-content">
+                                    <i class="fas fa-box"></i>
+                                    <p>Продукты не найдены</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+.products-container {
+    padding: 24px;
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-content h1 {
+    margin: 0 0 8px 0;
+    color: #1a1a1a;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.header-content p {
+    margin: 0;
+    color: #666;
+    font-size: 16px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.content-section {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.filters-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    border-bottom: 1px solid #f0f0f0;
+    gap: 16px;
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    font-size: 18px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 16px 12px 48px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 14px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.filters {
+    display: flex;
+    gap: 16px;
+}
+
+.filter-select {
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 14px;
+    background: white;
+    min-width: 150px;
+    cursor: pointer;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.btn-secondary {
+    background: #f8f9fa;
+    color: #666;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background: #e9ecef;
+    color: #666;
+    text-decoration: none;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.admin-table th {
+    background: #f8f9fa;
+    padding: 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #1a1a1a;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.admin-table td {
+    padding: 16px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+}
+
+.admin-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.product-image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-thumbnail {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.product-thumbnail-placeholder {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 20px;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.product-name {
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.product-description {
+    color: #666;
+    font-size: 12px;
+    max-width: 200px;
+}
+
+.author-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.author-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.author-avatar-placeholder {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.author-name {
+    font-size: 12px;
+    color: #666;
+}
+
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge-category {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.badge-business { background: #e8f5e8; color: #388e3c; }
+.badge-threedweb { background: #fff3e0; color: #f57c00; }
+.badge-saasplatforms { background: #f3e5f5; color: #7b1fa2; }
+.badge-agency { background: #fce4ec; color: #c2185b; }
+.badge-portfoliodesign { background: #f1f8e9; color: #689f38; }
+.badge-ecommerce { background: #e3f2fd; color: #1976d2; }
+.badge-education { background: #fff8e1; color: #f57f17; }
+.badge-health { background: #f3e5f5; color: #7b1fa2; }
+.badge-marketing { background: #e8f5e8; color: #388e3c; }
+.badge-restaurantandfood { background: #fff3e0; color: #f57c00; }
+.badge-gamingandentertainment { background: #fce4ec; color: #c2185b; }
+.badge-realestate { background: #f1f8e9; color: #689f38; }
+
+.price-free {
+    color: #4caf50;
+    font-weight: 600;
+}
+
+.price-paid {
+    color: #ff9800;
+    font-weight: 600;
+}
+
+.downloads-count {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #666;
+    font-size: 12px;
+}
+
+.downloads-count i {
+    color: #667eea;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-icon {
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-icon.btn-edit {
+    background: linear-gradient(135deg, #2196f3, #1976d2);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
+.btn-icon.btn-edit i {
+    color: #fff !important;
+    font-size: 20px;
+}
+
+.btn-icon.btn-edit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+}
+
+.btn-icon.btn-delete {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+}
+
+.btn-icon.btn-delete i {
+    color: #fff !important;
+    font-size: 20px;
+}
+
+.btn-icon.btn-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+}
+
+.no-data {
+    text-align: center;
+    padding: 40px 16px;
+}
+
+.no-data-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    color: #666;
+}
+
+.no-data-content i {
+    font-size: 48px;
+    color: #ccc;
+}
+
+.no-data-content p {
+    margin: 0;
+    font-size: 16px;
+}
+
+@@media (max-width: 768px) {
+    .products-container {
+        padding: 16px;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+    
+    .header-actions {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .filters-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-box {
+        max-width: none;
+    }
+    
+    .filters {
+        justify-content: center;
+    }
+    
+    .admin-table th,
+    .admin-table td {
+        padding: 12px 8px;
+    }
+    
+    .product-description {
+        max-width: 150px;
+    }
+}
+</style>
+
+<script src="~/js/admin-filters.js"></script>

@@ -1,0 +1,291 @@
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@model Templify.mvc.Models.MyTemplatesViewModel
+@{ ViewData["Title"] = @Localizer["MyTemplates"]; }
+
+<div style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
+    <!-- Header Section -->
+    <div style="text-align: center; margin-bottom: 40px;">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div style="background: linear-gradient(135deg, #00ff88 0%, #00e0ff 100%); color: #111; padding: 16px; text-align: center; font-weight: 600; margin-bottom: 20px; border-radius: 12px;">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        
+        <h1 style="color: #00ff88; font-size: 2.5rem; font-weight: 800; margin-bottom: 16px;">
+            <i class="ri-palette-line" style="margin-right: 12px;"></i>@Localizer["MyTemplates"]
+        </h1>
+        <p style="color: #ccc; font-size: 1.1rem; max-width: 600px; margin: 0 auto; line-height: 1.5;">
+            @Localizer["Manageandshowcase"]
+        </p>
+    </div>
+
+    <!-- Author Stats Section -->
+    <div style="background: #181a1b; border-radius: 24px; padding: 40px; margin-bottom: 40px; border: 2px solid #23272a;">
+        <div style="display: grid; grid-template-columns: auto 1fr; gap: 40px; align-items: center;">
+            <!-- Avatar -->
+            <div style="width: 120px; height: 120px; border-radius: 20px; overflow: hidden; background: #232526;">
+                <img src="@Url.Content(Model.Author.AvatarUrl)" alt="@Model.Author.Name" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <!-- Info -->
+            <div>
+                <h2 style="color: #fff; font-size: 2rem; font-weight: 700; margin: 0 0 8px 0;">@Model.Author.Name</h2>
+                <p style="color: #ccc; font-size: 1.1rem; margin: 0 0 16px 0;">@Model.Author.Specialization</p>
+                <div style="display: flex; gap: 32px;">
+                    <div style="text-align: center;">
+                        <div style="color: #00ff88; font-size: 1.5rem; font-weight: 700;" class="product-count">@Model.Products.Count</div>
+                        <div style="color: #ccc; font-size: 0.9rem;">@Localizer["Templates"]</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="color: #00ff88; font-size: 1.5rem; font-weight: 700;">@Model.Author.TotalDownloads</div>
+                        <div style="color: #ccc; font-size: 0.9rem;">@Localizer["Downloads"]</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Templates Grid -->
+    <div style="background: #181a1b; border-radius: 24px; padding: 40px; border: 2px solid #23272a;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+            <h2 style="color: #fff; font-size: 1.8rem; font-weight: 700; margin: 0;">@Localizer["YourTemplates"]</h2>
+            <a asp-controller="SubmitYourTemplate" asp-action="Index" style="text-decoration: none;">
+                <button type="button" style="background: linear-gradient(90deg,#00ff88 0%,#00e0ff 100%); color: #111; border: none; border-radius: 12px; padding: 12px 24px; font-weight: 700; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <i class="ri-add-line"></i> @Localizer["AddNewTemplate"]
+                </button>
+            </a>
+        </div>
+
+        @if (Model.Products.Any())
+        {
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;">
+                @foreach (var product in Model.Products)
+                {
+                    <div style="background: #232526; border-radius: 16px; overflow: hidden; border: 2px solid #23272a; transition: transform 0.2s;" data-product-id="@product.Id">
+                        <div style="position: relative;">
+                            <img src="@Url.Content(product.ImageUrl)" alt="@product.Name" style="width: 100%; height: 200px; object-fit: cover;">
+                            <div style="position: absolute; top: 16px; right: 16px; background: #00ff88; color: #111; padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 0.9rem;">$@product.Price</div>
+                            <div style="position: absolute; top: 16px; left: 16px; background: rgba(0, 0, 0, 0.7); color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem;">
+                                <i class="ri-download-line" style="margin-right: 4px;"></i>@product.Downloads
+                            </div>
+                        </div>
+                        <div style="padding: 20px;">
+                            <h3 style="color: #fff; font-size: 1.2rem; font-weight: 600; margin: 0 0 8px 0;">@product.Name</h3>
+                            <p style="color: #ccc; font-size: 0.9rem; margin: 0 0 12px 0; line-height: 1.4;">@product.Description</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: #00ff88; font-size: 0.9rem; font-weight: 600;">@product.Category</span>
+                                <div style="display: flex; gap: 8px;">
+                                    <a asp-controller="Products" asp-action="Product" asp-route-id="@product.Id" style="text-decoration: none;">
+                                        <button type="button" style="background: #23272a; color: #fff; border: 1px solid #333; border-radius: 8px; padding: 8px 16px; font-size: 0.9rem; cursor: pointer;">
+                                            <i class="ri-eye-line"></i> @Localizer["View"]
+                                        </button>
+                                    </a>
+                                    <a asp-controller="MyTemplates" asp-action="Edit" asp-route-id="@product.Id" style="text-decoration: none;">
+                                        <button type="button" style="background: #ffc107; color: #111; border: none; border-radius: 8px; padding: 8px 16px; font-size: 0.9rem; cursor: pointer;">
+                                            <i class="ri-edit-line"></i> @Localizer["Edit"]
+                                        </button>
+                                    </a>
+                                    <button type="button" onclick="deleteTemplate(@product.Id, '@product.Name')" style="background: #dc3545; color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-size: 0.9rem; cursor: pointer;">
+                                        <i class="ri-delete-bin-line"></i> @Localizer["Delete"]
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div style="text-align: center; padding: 60px 20px;">
+                <div style="color: #666; font-size: 4rem; margin-bottom: 24px;">
+                    <i class="ri-palette-line"></i>
+                </div>
+                <h3 style="color: #ccc; font-size: 1.5rem; margin: 0 0 16px 0;">@Localizer["Notemplatesyet"]</h3>
+                <p style="color: #666; font-size: 1rem; margin: 0 0 32px 0; max-width: 400px; margin-left: auto; margin-right: auto;">
+                    @Localizer["Startcreating"]
+                </p>
+                <a asp-controller="SubmitYourTemplate" asp-action="Index" style="text-decoration: none;">
+                    <button type="button" style="background: linear-gradient(90deg,#00ff88 0%,#00e0ff 100%); color: #111; border: none; border-radius: 12px; padding: 16px 32px; font-weight: 700; font-size: 1.1rem; cursor: pointer;">
+                        <i class="ri-add-line" style="margin-right: 8px;"></i>Create Your First Template
+                    </button>
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function editTemplate(productId) {
+        // TODO: Implement edit functionality
+        alert('Edit functionality will be implemented here for template ID: ' + productId);
+    }
+
+    function deleteTemplate(productId, productName) {
+        if (confirm(`Are you sure you want to delete "${productName}"? This action cannot be undone.`)) {
+            fetch(`/MyTemplates/Delete/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    showMessage(data.message, 'success');
+                    
+                    // Remove the product card from the DOM
+                    const productCard = document.querySelector(`[data-product-id="${productId}"]`);
+                    if (productCard) {
+                        productCard.style.animation = 'fadeOut 0.3s ease-out';
+                        setTimeout(() => {
+                            productCard.remove();
+                            
+                            // Update product count
+                            const productCount = document.querySelector('.product-count');
+                            if (productCount) {
+                                const currentCount = parseInt(productCount.textContent);
+                                productCount.textContent = currentCount - 1;
+                            }
+                            
+                            // Check if no products left
+                            const remainingProducts = document.querySelectorAll('[data-product-id]');
+                            if (remainingProducts.length === 0) {
+                                location.reload(); // Reload to show "no templates" message
+                            }
+                        }, 300);
+                    }
+                } else {
+                    showMessage(data.message || 'Failed to delete product', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('An error occurred while deleting the product', 'error');
+            });
+        }
+    }
+
+    function showMessage(message, type) {
+        // Remove existing messages
+        const existingMessage = document.querySelector('.message');
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+
+        // Create message element
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        messageDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+            max-width: 400px;
+            word-wrap: break-word;
+        `;
+
+        if (type === 'success') {
+            messageDiv.style.background = 'linear-gradient(90deg, #00ff88 0%, #00e0ff 100%)';
+            messageDiv.style.color = '#111';
+        } else {
+            messageDiv.style.background = 'linear-gradient(90deg, #ff6b6b 0%, #ff8e8e 100%)';
+        }
+
+        messageDiv.textContent = message;
+        document.body.appendChild(messageDiv);
+
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.remove();
+            }
+        }, 5000);
+    }
+
+    // Add CSS animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @@keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @@keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+
+<style>
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .submit-page {
+            padding: 20px 10px;
+        }
+        
+        .submit-header h1 {
+            font-size: 2rem;
+        }
+        
+        .submit-header p {
+            font-size: 1rem;
+        }
+        
+        .stats-section {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .btn-primary,
+        .btn-secondary {
+            width: 100%;
+        }
+    }
+    
+    @@media (max-width: 480px) {
+        .submit-header h1 {
+            font-size: 1.8rem;
+        }
+        
+        .submit-form-section {
+            padding: 24px 20px;
+        }
+        
+        .form-container h2 {
+            font-size: 1.5rem;
+        }
+        
+        .form-section h3 {
+            font-size: 1.1rem;
+        }
+    }
+</style>
