@@ -51,7 +51,6 @@ namespace Templify.mvc.Controllers
 <p><strong>Message:</strong></p>
 <p>{System.Net.WebUtility.HtmlEncode(model.Message).Replace("\n","<br/>")}</p>
 </div>";
-
                 var recipient = _configuration["Support:RecipientEmail"] ?? "shidomaeki@mail.ru";
                 await _emailService.SendEmailAsync(recipient, subject, html);
 
